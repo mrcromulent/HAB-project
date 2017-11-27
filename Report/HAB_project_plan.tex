@@ -50,11 +50,11 @@
 \newpage
 
 \section{Introduction}
-High-altitude balloons (HABs) are unmanned, near-space balloons which are released from the Earth's surface. They rise (typically to the strastosphere), before bursting and falling back down to the ground. These balloons are constructed for the purposes of gathering scientific data (such as temperature, pressure and wind speed) or just to take photos from a high altitude. Variations in flight characteristics like weather conditions, balloon design and obstacles can render a HAB's landing site unpredictable. This in turn makes the process of retrieving the balloon and accessing its data difficult. The purpose of this project is to develop software to predict the HAB landing site using GPS coordinate data gathered by an onboard Raspberry Pi and transmitted to a computer on the ground. 
+High-altitude balloons (HABs) are unmanned, near-space balloons which are released from the Earth's surface. They rise (typically to the strastosphere), before bursting and falling back down to the ground, sometimes hundreds of kilometers from their launch site. HABs are often constructed for the purposes of gathering scientific data (such as temperature, pressure and wind speed) or just to take photographs from a high altitude. However, variations in flight characteristics like weather conditions, balloon design and obstacles can render a HAB's landing site unpredictable. This in turn makes the process of retrieving the balloon and accessing its data difficult. The purpose of this project is to develop software to predict the HAB landing site using GPS coordinate data gathered by an onboard Raspberry Pi and transmitted to a computer on the ground. 
 
 \section{Project Scope and Requirements}
 
-Existing landing prediction software runs on the balloon's main flight computer.  The main process running on this computer is the tracker, which handles GPS reception, telemetry, and radio communications with the ground. Though the landing prediction system is separate to the tracker, it does interface with it -  GPS data is an input, and a periodic prediction of the payload landing site is an output.  Tracker-related tasks, such as driving GPS hardware or handling radio communications, is not within the prediction system scope. This project will not consider the software driving transmission of the signal from the balloon nor receipt of the signal on the ground. That is, sources of interference, incomplete data transmission and the radio transmissions protocols will not be considered. 
+Existing landing prediction software runs on the balloon's main flight computer.  The main process running on this computer is the tracker, which handles GPS reception, telemetry, and radio communications with the ground. Though the landing prediction system is separate to the tracker, it does interface with it -  GPS data is an input, and a periodic prediction of the payload landing site is an output.  Tracker-related tasks, such as driving GPS hardware or handling radio communications, are not within the scope of this project.
 
 \subsection{Interfaces}
 
@@ -86,13 +86,11 @@ The system interfaces are as follows:
 
 \subsection{Model and Assumptions}
 
-A moment-by-moment prediction of the landing site will be modelled by considering what would happen if the balloon burst at this particular instant. Air flow will be modelled as a series of concentric rings of equal wind speed through which the balloon will fall during its descent. The parachute is assumed to deploy instantly after the balloon burst and it will be modelled as a drag force on the payload during its descent. This, along with the wind , position and velocity information are sufficient to pose this as a kinematics problem. Flight data from actual balloon launches (available online) will be taken as a basis to test the accuracy of the prediction.
+A moment-by-moment prediction of the landing site will be modelled by considering what would happen if the balloon burst at this particular instant. Air flow will be modelled as a series of concentric rings of equal wind speed through which the balloon will fall during its descent. The parachute is assumed to deploy instantly after the balloon bursts and it will be modelled as a drag force on the payload during its descent. This, along with the wind , position and velocity information are sufficient to pose this as a kinematics problem. Flight data from actual balloon launches (available online) will be taken as a basis to test the accuracy of the prediction.
 
 \subsection{Requirements}
 
-%\item Because internet access is often unreliable in rural areas where HAB launches take place, the software prediction should not rely on an internet connection.
-
-%\item Software should have the ability to revise its predictions at regular intervals as more GPS data is provided
+The system requirements (as reproduced from HAB-LPR-SRD-0001) are listed below:
 
 \begin{table}[!htbp] \centering
  \begin{tabular}{|p{2cm} p{11cm}|}
@@ -231,14 +229,14 @@ A moment-by-moment prediction of the landing site will be modelled by considerin
 The code will include several iterations ("versions"):
 
 \begin{enumerate}
-\item VERSION 1: The code reads a static .txt file, identifies the relevant wind speeds in the data and stores them in a data format. 
+\item VERSION 1: The code reads a static .txt file, identifies the relevant wind speeds and balloon location in the data and stores them in a data format. 
 \item VERSION 2: The code predicts a single landing site as a set of GPS coordinates based on the static .txt file
 \item VERSION 3: The code updates its prediction of the landing site as new data is added to the file.
 \end{enumerate}
 
 
 \subsection{Deliverables}
-In this VERSION 4, the code that takes a continuously updating .txt file in the format produced an actual Raspberry Pi and outputs a predicted landing site on a map. This version also includes the failsafe methods mentioned in HAB-LPR-R11.
+In this VERSION 4, the code that takes a continuously updating .txt file generated in real-time and updates its landing site prediction accordingly. This version also includes the failsafe methods discussed in HAB-LPR-R11.
 
 \section{Project Timeline}
 
@@ -252,13 +250,13 @@ An expected timeline is shown in Table 1.
  Date & Week & Event & Comments \\ [0.5ex] 
  \hline
  Fr. 01/12/2017 & 2 & Literature review complete, project plan set & - \\
- Fr. 08/12/2017 & 3 & File I/O working in telemetry format (static)  & - \\
+ Fr. 08/12/2017 & 3 & File I/O working in telemetry format (static)  & See HAB-LPR-R04 \\
  Fr. 15/12/2017 & 4 & VERSION 1 Complete & - \\
- Fr. 22/12/2017 & 5 & File I/O working in telemetry format (updating) & Raspberry Pi should be obtained before break for testing purposes. Timeline to be reviewed \\
+ Fr. 22/12/2017 & 5 & File I/O working in telemetry format (updating) & Raspberry Pi should be obtained before break for testing purposes. Timeline to be reviewed this week \\
  Fr. 05/01/2018 & 6 & VERSION 3 complete & - \\ 
  Fr. 12/01/2018 & 7 & Presentation of results & Practice time allocated for this week \\
  Th. 18/01/2018 & 8 & VERSION 4 complete & - \\
- Fr. 19/01/2018 & 8 & Project Report complete & Examination of further work included in report \\
+ Fr. 19/01/2018 & 8 & Project Report complete & Further work to be included in report \\
  \hline
 \end{tabular}
 \caption{Expected project timeline}

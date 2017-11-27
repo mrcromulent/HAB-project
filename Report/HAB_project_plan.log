@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.10.12)  27 NOV 2017 22:08
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.10.12)  28 NOV 2017 09:16
 entering extended mode
 **./HAB_project_plan.tex
 (HAB_project_plan.tex
@@ -723,35 +723,27 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [2] [3]
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 102--102
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 100--100
 []\OT1/cmr/m/n/10.95 Requirement| 
  []
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 114--114
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 112--112
 []\OT1/cmr/m/n/10.95 Requirement| 
  []
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 126--126
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 124--124
 []\OT1/cmr/m/n/10.95 Requirement| 
  []
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 138--138
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 136--136
 []\OT1/cmr/m/n/10.95 Requirement| 
  []
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 150--150
-[]\OT1/cmr/m/n/10.95 Requirement| 
- []
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 162--162
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 148--148
 []\OT1/cmr/m/n/10.95 Requirement| 
  []
 
@@ -759,7 +751,7 @@ Overfull \hbox (4.11038pt too wide) in paragraph at lines 162--162
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 174--174
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 160--160
 []\OT1/cmr/m/n/10.95 Requirement| 
  []
 
@@ -767,7 +759,7 @@ Overfull \hbox (4.11038pt too wide) in paragraph at lines 174--174
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 186--186
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 172--172
 []\OT1/cmr/m/n/10.95 Requirement| 
  []
 
@@ -775,7 +767,7 @@ Overfull \hbox (4.11038pt too wide) in paragraph at lines 186--186
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 198--198
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 184--184
 []\OT1/cmr/m/n/10.95 Requirement| 
  []
 
@@ -783,7 +775,7 @@ Overfull \hbox (4.11038pt too wide) in paragraph at lines 198--198
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 210--210
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 196--196
 []\OT1/cmr/m/n/10.95 Requirement| 
  []
 
@@ -791,7 +783,15 @@ Overfull \hbox (4.11038pt too wide) in paragraph at lines 210--210
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 222--222
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 208--208
+[]\OT1/cmr/m/n/10.95 Requirement| 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 220--220
 []\OT1/cmr/m/n/10.95 Requirement| 
  []
 
@@ -805,12 +805,12 @@ LaTeX Warning: Text page 5 contains only floats.
 [5] [6] ("C:\Program Files\MiKTeX 2.9\tex\latex\base\bk10.clo"
 File: bk10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 )
-Underfull \hbox (badness 10000) in paragraph at lines 254--254
+Underfull \hbox (badness 10000) in paragraph at lines 252--252
 []\OT1/cmr/m/n/10 Literature re-view com-plete,
  []
 
 
-Underfull \hbox (badness 1286) in paragraph at lines 259--260
+Underfull \hbox (badness 1286) in paragraph at lines 257--258
 []\OT1/cmr/m/n/10 Practice time al-lo-cated for
  []
 
@@ -823,21 +823,14 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 [7
 
 ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 269.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 269.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 267.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 267.
  (HAB_project_plan.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 269.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 269.
-
-
-Package rerunfilecheck Warning: File `HAB_project_plan.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `HAB_project_plan.out':
-(rerunfilecheck)             Before: 2AF05A69FE38DA2C70ED43C738F9BF51;492
-(rerunfilecheck)             After:  E421A8ECDB4085993004E7E5A07C12AC;492.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 269.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 267.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 267.
+Package rerunfilecheck Info: File `HAB_project_plan.out' has not changed.
+(rerunfilecheck)             Checksum: E421A8ECDB4085993004E7E5A07C12AC;492.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 267.
  ) 
 Here is how much of TeX's memory you used:
  7028 strings out of 493334
@@ -846,7 +839,7 @@ Here is how much of TeX's memory you used:
  10450 multiletter control sequences out of 15000+200000
  10163 words of font info for 37 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 29i,10n,43p,824b,503s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 29i,10n,43p,887b,503s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Pr
 ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Fi
 les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKT
@@ -854,7 +847,7 @@ eX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fo
 nts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1
 /public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/a
 msfonts/cm/cmsy10.pfb>
-Output written on HAB_project_plan.pdf (7 pages, 142411 bytes).
+Output written on HAB_project_plan.pdf (7 pages, 142391 bytes).
 PDF statistics:
  118 PDF objects out of 1000 (max. 8388607)
  21 named destinations out of 1000 (max. 500000)
