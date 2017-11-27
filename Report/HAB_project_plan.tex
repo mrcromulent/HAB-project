@@ -1,0 +1,92 @@
+\documentclass[11pt]{article}
+
+\usepackage{titling}
+\usepackage[margin=1.25in]{geometry}
+\usepackage{graphicx,amsmath,hyperref}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{ANU AITC}
+\lhead{HAB Landing Site Project - AITC INTERN PLAN}
+\rfoot{Page \thepage}
+
+\title{A Landing Site Prediction System for High-Altitude Balloons \large}
+\author{Uri Pierre Burmester}
+\date{\today}
+
+\begin{document}
+
+\begin{figure} \centering
+  \includegraphics[width=0.5\linewidth]{ANU.png}
+\end{figure}
+
+\maketitle
+
+\centerline{AITC Summer Internship}  
+\centerline{Supervisor: Dr James Gilbert} 
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+High-altitude balloons (HAB's) are unmanned, near-space balloons which are released from the Earth's surface and rising (typically to the strastosphere), bursting and falling back down to the ground. These balloons are constructed for the purposes of gathering scientific data (such as temperature, pressure and wind speed) or just to take photos from a high altitude. Variations in flight characteristics like weather conditions, balloon design and obstacles can render a HAB's landing site unpredictable. This in turn makes the process of retrieving the balloon and accessing its data difficult. The purpose of this project is to develop software to predict the HAB landing site using GPS coordinate data gathered by an onboard Raspberry Pi and transmitted to a computer on the ground. 
+
+\section{Project Scope}
+
+Some boundaries must be set on the project scope in order to proceed. These are as follows:
+
+\begin{enumerate}
+\item Because internet access is often unreliable in rural areas where HAB launches take place, the software prediction should not rely on a constant internet connection.
+\item To compliment the Raspberry Pi, software will be coded in Python. 
+\item This project will not consider the software driving transmission of the signal from the balloon nor receipt of the signal on the ground. That is, sources of interference, incomplete data transmission and the radio transmissions protocols will not be considered.  
+\item Software should have the ability to revise its predictions at regular intervals as more GPS data is provided 
+\end{enumerate}
+
+\subsection{Model and Assumptions}
+
+A moment-by-moment prediction of the landing site will be modelled by considering what would happen if the balloon burst at this particular instant. Air flow will be modelled as a series of concentric rings of equal wind speed through which the balloon will fall during its descent. The parachute is assumed to deploy instantly after the balloon burst and it will be modelled as a drag force on the payload during its descent. This, along with the wind , position and velocity information are sufficient to pose this as a kinematics problem. 
+
+Flight data from actual balloon launches (available online) will be taken as a basis to test the accuracy of the prediction.
+
+
+\section{Project Milestones and Deliverables}
+
+The code will include several iterations ("versions"):
+
+\begin{enumerate}
+\item VERSION 1: The code reads a static .txt file, identifies the relevant wind speeds in the data and stores them in a data format. 
+\item VERSION 2: The code predicts a single landing site as a set of GPS coordinates based on the static .txt file
+\item VERSION 3: The code updates its prediction of the landing site as new data is added to the file.
+\end{enumerate}
+
+
+\subsection{Deliverables}
+In this VERSION 4, the code that takes a continuously updating .txt file in the format produced an actual Raspberry Pi and outputs a predicted landing site on a map.
+
+\section{Project Timeline}
+
+An expected timeline is shown in Table 1.
+
+\begin{table}[!h] \label{timeline} \centering
+ \begin{tabular}{|c c c p{5.5cm}|} 
+ \hline
+ Date & Week & Event & Comments \\ [0.5ex] 
+ \hline
+ Fr. 08/12/2017 & 3 & VERSION 1 complete & - \\
+ Fr. 15/12/2017 & 4 & VERSION 2 complete & - \\
+ Fr. 22/12/2017 & 5 & VERSION 3 complete & Timeline to be reviewed \\
+ Fr. 05/01/2018 & 6 & VERSION 4 complete & Raspberry Pi should be obtained before break \\
+ Fr. 12/01/2018 & 7 & Presentation of results & Practice time allocated for this week \\
+ Fr. 19/01/2018 & 8 & Project Report complete & Examination of further work included in report \\
+ \hline
+\end{tabular}
+\caption{Expected project timeline}
+\end{table}
+
+\end{document}
