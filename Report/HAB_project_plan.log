@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.10.12)  24 NOV 2017 13:50
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.10.12)  27 NOV 2017 22:08
 entering extended mode
 **./HAB_project_plan.tex
 (HAB_project_plan.tex
@@ -608,20 +608,20 @@ s
 (HAB_project_plan.aux)
 \openout1 = `HAB_project_plan.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 20.
-LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -684,7 +684,7 @@ G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 456.
 )
 \AtBeginShipoutBox=\box29
-Package hyperref Info: Link coloring OFF on input line 20.
+Package hyperref Info: Link coloring OFF on input line 35.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
@@ -694,19 +694,19 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count120
 )
-LaTeX Info: Redefining \ref on input line 20.
-LaTeX Info: Redefining \pageref on input line 20.
-LaTeX Info: Redefining \nameref on input line 20.
+LaTeX Info: Redefining \ref on input line 35.
+LaTeX Info: Redefining \pageref on input line 35.
+LaTeX Info: Redefining \nameref on input line 35.
 
 (HAB_project_plan.out) (HAB_project_plan.out)
 \@outlinefile=\write3
 \openout3 = `HAB_project_plan.out'.
 
 
-<ANU.png, id=27, 172.134pt x 59.787pt>
+<ANU.png, id=35, 172.134pt x 59.787pt>
 File: ANU.png Graphic file (type png)
  <use ANU.png>
-Package pdftex.def Info: ANU.png used on input line 23.
+Package pdftex.def Info: ANU.png used on input line 38.
 (pdftex.def)             Requested size: 216.81pt x 75.30737pt.
  [1
 
@@ -723,32 +723,140 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [2] [3]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 92.
- [4]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 92.
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 102--102
+[]\OT1/cmr/m/n/10.95 Requirement| 
+ []
+
+
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 114--114
+[]\OT1/cmr/m/n/10.95 Requirement| 
+ []
+
+
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 126--126
+[]\OT1/cmr/m/n/10.95 Requirement| 
+ []
+
+
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 138--138
+[]\OT1/cmr/m/n/10.95 Requirement| 
+ []
+
+
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 150--150
+[]\OT1/cmr/m/n/10.95 Requirement| 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 162--162
+[]\OT1/cmr/m/n/10.95 Requirement| 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 174--174
+[]\OT1/cmr/m/n/10.95 Requirement| 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 186--186
+[]\OT1/cmr/m/n/10.95 Requirement| 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 198--198
+[]\OT1/cmr/m/n/10.95 Requirement| 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 210--210
+[]\OT1/cmr/m/n/10.95 Requirement| 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 222--222
+[]\OT1/cmr/m/n/10.95 Requirement| 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[4]
+
+LaTeX Warning: Text page 5 contains only floats.
+
+[5] [6] ("C:\Program Files\MiKTeX 2.9\tex\latex\base\bk10.clo"
+File: bk10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+)
+Underfull \hbox (badness 10000) in paragraph at lines 254--254
+[]\OT1/cmr/m/n/10 Literature re-view com-plete,
+ []
+
+
+Underfull \hbox (badness 1286) in paragraph at lines 259--260
+[]\OT1/cmr/m/n/10 Practice time al-lo-cated for
+ []
+
+
+Package Fancyhdr Warning: \headheight is too small (12.0pt): 
+ Make it at least 13.59999pt.
+ We now make it that large for the rest of the document.
+ This may cause the page layout to be inconsistent, however.
+
+[7
+
+]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 269.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 269.
  (HAB_project_plan.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 92.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 92.
-Package rerunfilecheck Info: File `HAB_project_plan.out' has not changed.
-(rerunfilecheck)             Checksum: 0FFE59A8AF6B9B3EF71BE1E6615151EA;353.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 92.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 269.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 269.
+
+
+Package rerunfilecheck Warning: File `HAB_project_plan.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `HAB_project_plan.out':
+(rerunfilecheck)             Before: 2AF05A69FE38DA2C70ED43C738F9BF51;492
+(rerunfilecheck)             After:  E421A8ECDB4085993004E7E5A07C12AC;492.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 269.
  ) 
 Here is how much of TeX's memory you used:
- 7017 strings out of 493334
- 98750 string characters out of 3139248
- 202618 words of memory out of 3000000
- 10443 multiletter control sequences out of 15000+200000
- 9709 words of font info for 35 fonts, out of 3000000 for 9000
+ 7028 strings out of 493334
+ 98975 string characters out of 3139248
+ 211615 words of memory out of 3000000
+ 10450 multiletter control sequences out of 15000+200000
+ 10163 words of font info for 37 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 29i,10n,43p,814b,419s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 29i,10n,43p,824b,503s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Pr
 ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Fi
-les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTe
-X 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fon
-ts/type1/public/amsfonts/cm/cmr17.pfb>
-Output written on HAB_project_plan.pdf (4 pages, 114285 bytes).
+les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKT
+eX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1
+/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/a
+msfonts/cm/cmsy10.pfb>
+Output written on HAB_project_plan.pdf (7 pages, 142411 bytes).
 PDF statistics:
- 90 PDF objects out of 1000 (max. 8388607)
- 20 named destinations out of 1000 (max. 500000)
- 54 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 118 PDF objects out of 1000 (max. 8388607)
+ 21 named destinations out of 1000 (max. 500000)
+ 70 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -9,13 +9,28 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\rhead{ANU AITC}
+\rhead{HAB-LPR-SRD-0002}
 \lhead{HAB Landing Site Project - AITC INTERN PLAN}
 \rfoot{Page \thepage}
 
 \title{A Landing Site Prediction System for High-Altitude Balloons \large}
 \author{Uri Pierre Burmester}
 \date{\today}
+
+\newenvironment{localsize}[1]
+{%
+  \clearpage
+  \let\orignewcommand\newcommand
+  \let\newcommand\renewcommand
+  \makeatletter
+  \input{bk#1.clo}%
+  \makeatother
+  \let\newcommand\orignewcommand
+}
+{%
+  \clearpage
+}
+
 
 \begin{document}
 
@@ -35,25 +50,181 @@
 \newpage
 
 \section{Introduction}
-High-altitude balloons (HAB's) are unmanned, near-space balloons which are released from the Earth's surface and rising (typically to the strastosphere), bursting and falling back down to the ground. These balloons are constructed for the purposes of gathering scientific data (such as temperature, pressure and wind speed) or just to take photos from a high altitude. Variations in flight characteristics like weather conditions, balloon design and obstacles can render a HAB's landing site unpredictable. This in turn makes the process of retrieving the balloon and accessing its data difficult. The purpose of this project is to develop software to predict the HAB landing site using GPS coordinate data gathered by an onboard Raspberry Pi and transmitted to a computer on the ground. 
+High-altitude balloons (HABs) are unmanned, near-space balloons which are released from the Earth's surface. They rise (typically to the strastosphere), before bursting and falling back down to the ground. These balloons are constructed for the purposes of gathering scientific data (such as temperature, pressure and wind speed) or just to take photos from a high altitude. Variations in flight characteristics like weather conditions, balloon design and obstacles can render a HAB's landing site unpredictable. This in turn makes the process of retrieving the balloon and accessing its data difficult. The purpose of this project is to develop software to predict the HAB landing site using GPS coordinate data gathered by an onboard Raspberry Pi and transmitted to a computer on the ground. 
 
-\section{Project Scope}
+\section{Project Scope and Requirements}
 
-Some boundaries must be set on the project scope in order to proceed. These are as follows:
+Existing landing prediction software runs on the balloon's main flight computer.  The main process running on this computer is the tracker, which handles GPS reception, telemetry, and radio communications with the ground. Though the landing prediction system is separate to the tracker, it does interface with it -  GPS data is an input, and a periodic prediction of the payload landing site is an output.  Tracker-related tasks, such as driving GPS hardware or handling radio communications, is not within the prediction system scope. This project will not consider the software driving transmission of the signal from the balloon nor receipt of the signal on the ground. That is, sources of interference, incomplete data transmission and the radio transmissions protocols will not be considered. 
 
-\begin{enumerate}
-\item Because internet access is often unreliable in rural areas where HAB launches take place, the software prediction should not rely on a constant internet connection.
-\item To compliment the Raspberry Pi, software will be coded in Python. 
-\item This project will not consider the software driving transmission of the signal from the balloon nor receipt of the signal on the ground. That is, sources of interference, incomplete data transmission and the radio transmissions protocols will not be considered.  
-\item Software should have the ability to revise its predictions at regular intervals as more GPS data is provided 
-\end{enumerate}
+\subsection{Interfaces}
+
+The system interfaces are as follows:
+
+\begin{table}[!htbp] \centering
+ \begin{tabular}{|p{2cm} | p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{Tracking system (GPS log)} \\
+  \hline
+  Type & Data \\
+  \hline
+  Description & Recent and historical latitude, longitude and altitude data.  \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} | p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{Tracking system (data transmission)} \\
+  \hline
+  Type & Data \\
+  \hline
+  Description & The latest landing site prediction (latitude, longitude) to be transmitted by the tracking system’s radio transceiver(s). \\
+  \hline
+ \end{tabular}
+\end{table}
 
 \subsection{Model and Assumptions}
 
-A moment-by-moment prediction of the landing site will be modelled by considering what would happen if the balloon burst at this particular instant. Air flow will be modelled as a series of concentric rings of equal wind speed through which the balloon will fall during its descent. The parachute is assumed to deploy instantly after the balloon burst and it will be modelled as a drag force on the payload during its descent. This, along with the wind , position and velocity information are sufficient to pose this as a kinematics problem. 
+A moment-by-moment prediction of the landing site will be modelled by considering what would happen if the balloon burst at this particular instant. Air flow will be modelled as a series of concentric rings of equal wind speed through which the balloon will fall during its descent. The parachute is assumed to deploy instantly after the balloon burst and it will be modelled as a drag force on the payload during its descent. This, along with the wind , position and velocity information are sufficient to pose this as a kinematics problem. Flight data from actual balloon launches (available online) will be taken as a basis to test the accuracy of the prediction.
 
-Flight data from actual balloon launches (available online) will be taken as a basis to test the accuracy of the prediction.
+\subsection{Requirements}
 
+%\item Because internet access is often unreliable in rural areas where HAB launches take place, the software prediction should not rely on an internet connection.
+
+%\item Software should have the ability to revise its predictions at regular intervals as more GPS data is provided
+
+\begin{table}[!htbp] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R01 – Purpose and inputs} \\
+  \hline
+  Requirement & The landing site prediction system shall estimate the landing site of the payload based only on recent and historical GPS coordinates and altitudes. \\
+  \hline
+  Rationale & A log of GPS data is the primary source of information from the balloon payload.  \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R02 – System host} \\
+  \hline
+  Requirement & The landing site prediction system shall run on the same computer as the tracking system.  This computer will be a Raspberry Pi Zero or Raspberry Pi A+.  \\
+  \hline
+  Rationale & Ease of data I/O and reduction of payload mass (existing computer, power supply etc.)  \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R03 – Start on boot} \\
+  \hline
+  Requirement & The landing site prediction system shall be capable of starting when the flight computer is booted, without external input from other systems or users.  \\
+  \hline
+  Rationale & Simplicity upon launch; the computer will not have user interfaces, and reliance on other systems or people increases the chance of error before balloon release.  \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R04 – Input format} \\
+  \hline
+  Requirement & The landing site prediction system shall obtain input data from a text file at a customisable path on the flight computer. The data format is comma-separated values (CSV), using ASCII characters and terminated by a newline character. There may be up to twenty fields per line. The column numbers of the input fields (latitude, longitude, altitude) shall be customisable in the code. Numbers may be zero-padded. An example string is: $ \$ \$YERRA,698,00:23:30,-35.32110,149.00710,00747,11,16,9,50.7,31.2,932,31.1*16A8$ \\
+  \hline
+  Rationale & An industry standard method of storing data that is compatible with the existing tracker software.   \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R05 – Units} \\
+  \hline
+  Requirement & All input and output units shall be in decimal degrees ($\pm $90 lat, $\pm$ 180 lon) for coordinates, and metres for altitudes.  \\
+  \hline
+  Rationale & Consistency with existing tracker software. \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R06 – Output format} \\
+  \hline
+  Requirement & The landing site prediction system shall write output data to a text file at a customisable path on the flight computer. The data format shall be comma-separated values (CSV), using ASCII characters and terminated by a newline character. The column order shall be customisable in the code. The values shall be numbers only. \\
+  \hline
+  Rationale & An industry standard method of storing data that is compatible with the existing tracker software.  \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R07 – Logging} \\
+  \hline
+  Requirement & The landing site prediction system shall write all prediction outputs to a log in the form of an ASCII text file. All logs shall include a UNIX timestamp (nearest second or better), and any other relevant parameters, such as the latest input data.  \\
+  \hline
+  Rationale & A historical record of the system’s output will be useful for improving the system.   \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R08 – Internet connection} \\
+  \hline
+  Requirement & The landing site prediction system shall not require an internet connection to operate. \\
+  \hline
+  Rationale & A driving requirement of this system is that it functions without an internet connection.  \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R09 – Valid prediction timings} \\
+  \hline
+  Requirement & The landing site prediction system shall begin outputting valid prediction data within one minute after balloon burst (payload decent), or earlier. Prediction during ascent (assuming imminent burst) is desirable but optional. \\
+  \hline
+  Rationale & Balloon burst is the point at which all ascent data should exist and landing site prediction becomes particularly important.   \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R10 – Prediction update interval} \\
+  \hline
+  Requirement & The landing site prediction system shall output a new prediction at intervals of two minutes or less, from when the first prediction is made. \\
+  \hline
+  Rationale & Refining predictions based on the latest data should increase prediction accuracy, and frequent updates will benefit ground logistics to approach the predicted landing site.  \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R11 – Error handling} \\
+  \hline
+  Requirement & The landing site prediction system shall at no point jeopardise the continued operation of the flight computer and tracker system. All errors shall be handled in a way that, at worst, stops operation of the prediction software only. The system shall be fail-safe.  \\
+  \hline
+  Rationale & Affecting the tracker system could lead to a loss of communications and a lost flight.  \\
+  \hline
+ \end{tabular}
+\end{table}
 
 \section{Project Milestones and Deliverables}
 
@@ -67,26 +238,32 @@ The code will include several iterations ("versions"):
 
 
 \subsection{Deliverables}
-In this VERSION 4, the code that takes a continuously updating .txt file in the format produced an actual Raspberry Pi and outputs a predicted landing site on a map.
+In this VERSION 4, the code that takes a continuously updating .txt file in the format produced an actual Raspberry Pi and outputs a predicted landing site on a map. This version also includes the failsafe methods mentioned in HAB-LPR-R11.
 
 \section{Project Timeline}
 
 An expected timeline is shown in Table 1.
 
-\begin{table}[!h] \label{timeline} \centering
- \begin{tabular}{|c c c p{5.5cm}|} 
+\begin{localsize}{10}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|c c p{5cm} p{4.5cm}|} 
  \hline
  Date & Week & Event & Comments \\ [0.5ex] 
  \hline
- Fr. 08/12/2017 & 3 & VERSION 1 complete & - \\
- Fr. 15/12/2017 & 4 & VERSION 2 complete & - \\
- Fr. 22/12/2017 & 5 & VERSION 3 complete & Timeline to be reviewed \\
- Fr. 05/01/2018 & 6 & VERSION 4 complete & Raspberry Pi should be obtained before break \\
+ Fr. 01/12/2017 & 2 & Literature review complete, project plan set & - \\
+ Fr. 08/12/2017 & 3 & File I/O working in telemetry format (static)  & - \\
+ Fr. 15/12/2017 & 4 & VERSION 1 Complete & - \\
+ Fr. 22/12/2017 & 5 & File I/O working in telemetry format (updating) & Raspberry Pi should be obtained before break for testing purposes. Timeline to be reviewed \\
+ Fr. 05/01/2018 & 6 & VERSION 3 complete & - \\ 
  Fr. 12/01/2018 & 7 & Presentation of results & Practice time allocated for this week \\
+ Th. 18/01/2018 & 8 & VERSION 4 complete & - \\
  Fr. 19/01/2018 & 8 & Project Report complete & Examination of further work included in report \\
  \hline
 \end{tabular}
 \caption{Expected project timeline}
 \end{table}
+
+\end{localsize}
 
 \end{document}
