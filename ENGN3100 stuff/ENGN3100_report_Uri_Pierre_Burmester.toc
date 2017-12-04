@@ -1,23 +1,23 @@
 \select@language {english}
 \contentsline {section}{\numberline {1}Summary of Practical Experience}{3}{section.1}
-\contentsline {section}{\numberline {2}Letters of Employment / Declaration of IEAUST requirements}{4}{section.2}
+\contentsline {section}{\numberline {2}Employment Letters / Declaration of requirements}{4}{section.2}
 \contentsline {subsection}{\numberline {2.1}AITC Letter}{4}{subsection.2.1}
 \contentsline {subsection}{\numberline {2.2}Questacon Letter}{5}{subsection.2.2}
 \contentsline {section}{\numberline {3}Report}{6}{section.3}
 \contentsline {subsection}{\numberline {3.1}AITC Report}{6}{subsection.3.1}
-\contentsline {subsubsection}{\numberline {3.1.1}The structure and operation of the Company}{6}{subsubsection.3.1.1}
-\contentsline {subsubsection}{\numberline {3.1.2}My Position in the Company}{6}{subsubsection.3.1.2}
-\contentsline {subsubsection}{\numberline {3.1.3}Technical Description of the Job}{6}{subsubsection.3.1.3}
-\contentsline {subsection}{\numberline {3.2}Questacon Report}{6}{subsection.3.2}
-\contentsline {section}{\numberline {4}Development of Stage 1 Competency Standards for Professional Engineer}{7}{section.4}
-\contentsline {section}{\numberline {5}Employer Feedback Forms}{8}{section.5}
-\contentsline {subsection}{\numberline {5.1}AITC}{8}{subsection.5.1}
-\contentsline {subsection}{\numberline {5.2}Questacon}{9}{subsection.5.2}
-\contentsline {section}{\numberline {6}Employer Declarations of Report Accuracy}{10}{section.6}
-\contentsline {subsection}{\numberline {6.1}AITC}{10}{subsection.6.1}
-\contentsline {subsection}{\numberline {6.2}Questacon}{11}{subsection.6.2}
-\contentsline {section}{\numberline {7}Conclusions}{12}{section.7}
-\contentsline {section}{\numberline {8}Reflection of Work Experience}{13}{section.8}
-\contentsline {section}{\numberline {9}Acknowledgements}{14}{section.9}
-\contentsline {section}{\numberline {10}Signature and date}{14}{section.10}
-\contentsline {section}{\numberline {11}Appendix 1: Stage 1 Competency Matrix}{15}{section.11}
+\contentsline {subsubsection}{\numberline {3.1.1}The structure and operation of the company}{6}{subsubsection.3.1.1}
+\contentsline {subsubsection}{\numberline {3.1.2}My Position in the Company}{7}{subsubsection.3.1.2}
+\contentsline {subsubsection}{\numberline {3.1.3}Technical Description of the Job}{8}{subsubsection.3.1.3}
+\contentsline {subsection}{\numberline {3.2}Questacon Report}{9}{subsection.3.2}
+\contentsline {section}{\numberline {4}Development of Stage 1 Competency Standards for Professional Engineer}{10}{section.4}
+\contentsline {section}{\numberline {5}Employer Feedback Forms}{11}{section.5}
+\contentsline {subsection}{\numberline {5.1}AITC}{11}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Questacon}{12}{subsection.5.2}
+\contentsline {section}{\numberline {6}Employer Declarations of Report Accuracy}{13}{section.6}
+\contentsline {subsection}{\numberline {6.1}AITC}{13}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Questacon}{14}{subsection.6.2}
+\contentsline {section}{\numberline {7}Conclusions}{15}{section.7}
+\contentsline {section}{\numberline {8}Reflection of Work Experience}{16}{section.8}
+\contentsline {section}{\numberline {9}Acknowledgements}{17}{section.9}
+\contentsline {section}{\numberline {10}Signature and date}{17}{section.10}
+\contentsline {section}{\numberline {11}Appendix 1: Stage 1 Competency Matrix}{18}{section.11}
