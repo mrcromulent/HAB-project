@@ -7,12 +7,15 @@ Created on Mon Dec  4 13:05:27 2017
 
 import time
 
+sleep_time = 2
 
-for i in range(0,50):
+
+for i in range(0,500):
     
     #ignore the first line
     if i == 0:
-        f = open('telemetry_test.txt','r')
+        f = open('YERRALOON1_telemetry.txt','r')
+        f.seek(0)
 #        f.readline()
     
     line = f.readline()
@@ -21,7 +24,7 @@ for i in range(0,50):
     g.write(line)
     g.close()
         
-    time.sleep(12)
+    time.sleep(sleep_time)
     
 
 f.close()

@@ -15,11 +15,12 @@ rising = False
 telemetry = []
 winds = []
 wind_band_width = 100
+sleep_time = 2 #normally 12
 
 #check if the file has any data written to it. If not, wait 12 seconds and try again
 while oc.file_empty(fp):
     print('Telemetry file empty or non-existant')
-    t.sleep(12)
+    t.sleep(sleep_time)
 
 #record launch site values, taken as the second row of the .txt file
 
@@ -34,7 +35,7 @@ while True:
     new_telemetry = oc.add_telemetry(fp)
     telemetry.append(new_telemetry)
     
-    print(telemetry)
+    #print(telemetry)
     
     #extract current values of the important quantities
         
@@ -60,6 +61,7 @@ while True:
             
             #calculate the windspeed and add it to the list
             new_wind = wind.calc_windspeed(wind_lower_data,wind_upper_data)
+
             winds.append(new_wind)
             
             #reset the lower band data
@@ -71,7 +73,7 @@ while True:
         #Find some way to transmit prediction?
         
     #put the code to sleep until new data is expected
-    t.sleep(12)
+    t.sleep(sleep_time)
         
 
         
