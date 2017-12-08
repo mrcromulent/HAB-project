@@ -9,19 +9,30 @@ import os
 
 def file_empty(filepath):
     try:
-        return (os.stat(filepath).st_size < 50)
+        return (os.stat(filepath).st_size < 120)
     
     except FileNotFoundError:
         return True
 
+def read_properly(f):
+    tmp = f.readline().split(',')
+    
+    if tmp[0] != '$$YERRA':
+        return False
+    else:
+        return tmp
 
 #MODIFY THIS FILE TO CHECK IF THE VALUES MAKE SENSE
 
 def record_launch_values(filepath):
     f = open(filepath)    
-    f.readline() #ignore first row
+    
+    line = read_properly(f)
+    
+    while line == False:
+        line = read_properly(f)
 
-    start_data = f.readline().split(',')
+    start_data = line
 
     #assign data to variables
 
