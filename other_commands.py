@@ -26,8 +26,6 @@ def read_properly(f):
     else:
         return read_properly(f)
 
-#MODIFY THIS FILE TO CHECK IF THE VALUES MAKE SENSE
-
 def record_launch_values(filepath):
     
     global read_pos

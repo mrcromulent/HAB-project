@@ -5,9 +5,7 @@ Created on Tue Dec  5 08:59:41 2017
 @author: Pierre
 """
 
-from math import exp
-from math import pi
-from math import sqrt
+from math import exp, pi, sqrt, sin, cos, asin
 
 g_0 = 9.80665
 R_star = 8.3144598
@@ -131,4 +129,25 @@ def splat(lat,long,alt,speed,heading,winds):
 
     except FileNotFoundError:
         h.close()
-    #print("Landing site prediction. Lat: %r. Long: %r" %(lat,long))
+    
+earth_radius = 6371000 #m
+alt = 280
+
+def how_far(lat1,long1,time,lat2 = -34.37435, long2 = 147.86021):
+    del_lat = abs(lat1 - lat2) * pi / 180
+    del_long = abs(long1 - long2) * pi / 180
+
+    lat_lower = lat1 * pi / 180
+    lat_upper = lat2 * pi / 180
+    
+    #find the radius from the centre of the earth
+    
+    R = earth_radius + alt
+    
+    term_1 = (sin(del_lat/2)) ** 2
+    term_2 = cos(lat_lower) * cos(lat_upper)
+    term_3 = (sin(del_long/2)) ** 2
+    
+    dist = 2*R*asin(sqrt(term_1 + term_2 * term_3))
+    
+    print(time, 'Distance:', dist/1000, 'km')

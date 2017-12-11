@@ -11,7 +11,7 @@ import other_commands as oc
 import wind
 import how_far as hf
 
-fp = 'test2.txt'
+fp = 'test.txt'
 #fp = 'YERRALOON1_DATA\\telemetry.txt'
 
 #Quantities
@@ -90,11 +90,11 @@ while True:
             predictions_made += 1
             the_time = t.time()
             
-            hf.how_far(lat1,long1)
+            landing.how_far(lat1,long1,time)
         
             #Find some way to transmit prediction?
         
-    if len(telemetry) > 7000: #flight must be over by now (10000 might be needed for longer flights)
+    if len(telemetry) > 6000: #flight must be over by now (10000 might be needed for longer flights)
         break
         
     #put the code to sleep until new data is expected
