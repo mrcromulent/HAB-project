@@ -8,10 +8,10 @@ Created on Mon Dec  4 13:05:27 2017
 import time
 
 URL = 'YERRALOON1_DATA\\telemetry.txt'
-sleep_time = 1
+sleep_time = 0
 
 
-for i in range(0,500):
+for i in range(0,10000):
     
     #ignore the first line
     if i == 0:

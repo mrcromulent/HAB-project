@@ -26,6 +26,8 @@ oth_m = 0.3
 
 m = pay_m + oth_m + 0.05 * bal_m #DESCENT MASS 
 
+outfile = 'prediction.txt'
+
 def density_at_alt(alt):
     
     #altitutde is given in m above mean sea level
@@ -100,19 +102,31 @@ def find_bandchange(windband,v0):
     return [delta_lat,delta_long,alt_lower,v0]
 
 def how_many_bands(winds,alt):
-    pass
+    for i in range(0,len(winds)):
+        if winds[i][1] > alt:
+            return i
+
+    return len(winds)
 
 def splat(lat,long,alt,speed,heading,winds):
     
-    num_bands = len(winds)
-    
-    #to_ground = how_many_bands(winds, alt)
-    
-    for i in range(0,num_bands):
+    try:
+        num_bands = how_many_bands(winds,alt)
         
-        [delta_lat,delta_long,new_alt,new_speed] = find_bandchange(winds[i],speed)
+        #to_ground = how_many_bands(winds, alt)
         
-        lat = lat + delta_lat
-        long = long + delta_long
-    
-    print("Landing site prediction. Lat: %r. Long: %r" %(lat,long))
+        for i in range(num_bands-1,-1,-1):
+            
+            [delta_lat,delta_long,new_alt,new_speed] = find_bandchange(winds[i],speed)
+            
+            lat = lat + delta_lat
+            long = long + delta_long
+            
+        h = open(outfile,'a')
+        h.write(str(round(lat,6)) + ',' + str(round(long,6)) + ',')
+        h.close()
+            
+
+    except FileNotFoundError:
+        h.close()
+    #print("Landing site prediction. Lat: %r. Long: %r" %(lat,long))

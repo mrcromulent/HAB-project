@@ -11,13 +11,14 @@ import other_commands as oc
 import wind
 
 fp = 'test.txt'
+#fp = 'YERRALOON1_DATA\\telemetry.txt'
 
 #Quantities
 rising = False
 telemetry = []
 winds = []
 wind_band_width = 100
-sleep_time = 1 #seconds. normally 12
+sleep_time = 0 #seconds. normally 12
 
 start_time = '00:00:00'
 start_lat = 0.0
@@ -36,13 +37,15 @@ while start_time == '00:00:00' or start_lat == 0.0 or start_long == 0.0 or start
     (start_time,start_lat,start_long,start_elev) = oc.record_launch_values(fp)
     
 #MAIN LOOP
+    
+predictions_made =0
 
 while True:
     
     #add a new line to the telemetry list
     
     new_telemetry = oc.add_telemetry(fp)
-    telemetry.append(new_telemetry)
+    #telemetry.append(new_telemetry)
     #print(telemetry)
     
     #extract current values of the important quantities
@@ -55,11 +58,13 @@ while True:
     heading = new_telemetry[7]
         
     #Detect when the balloon has started to lift off, set the lower wind band data
-    if rising == False and (alt - start_elev) > 10:
+    if rising == False and (alt - start_elev) > 100:
         rising = True
         wind_lower_data = [time,lat,long,alt,speed,heading]
             
     if rising == True:
+        
+        telemetry.append(new_telemetry)
         
         #If a band has been crossed ...
         if (alt - wind_lower_data[3]) >= wind_band_width:    
@@ -67,17 +72,23 @@ while True:
             # ... record the current data
             wind_upper_data = [time,lat,long,alt,speed,heading]
             
-            #calculate the windspeed and add it to the list
+            #calculate the windspeeds (in deg/s) and add it to the list
             new_wind = wind.calc_windspeed(wind_lower_data,wind_upper_data)
             winds.append(new_wind)
             
             #reset the lower band data
             wind_lower_data = wind_upper_data[:]
             
-        #predict the landing site
-        prediction = landing.splat(lat,long,alt,speed,heading,winds)
+            #predict the landing site
+        
+            #this prediction needs to happen less often
+            landing.splat(lat,long,alt,speed,heading,winds)
+            predictions_made += 1
         
         #Find some way to transmit prediction?
+        
+    if len(telemetry) > 7000: #flight must be over by now (10000 might be needed for longer flights)
+        break
         
     #put the code to sleep until new data is expected
     t.sleep(sleep_time)
