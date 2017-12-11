@@ -11,21 +11,30 @@ import other_commands as oc
 import wind
 
 fp = 'test.txt'
+
+#Quantities
 rising = False
 telemetry = []
 winds = []
 wind_band_width = 100
-sleep_time = 12 #normally 12
+sleep_time = 1 #seconds. normally 12
 
-#check if the file has any data written to it. If not, wait 12 seconds and try again
+start_time = '00:00:00'
+start_lat = 0.0
+start_long = 0.0
+start_elev = 0.0
+
+#check if the file has any data written to it. If not, wait sleep_time seconds and try again
 while oc.file_empty(fp):
     print('Telemetry file empty or non-existant')
     t.sleep(sleep_time)
 
-#record launch site values, taken as the second row of the .txt file
-
-(start_time,start_lat,start_long,start_elev) = oc.record_launch_values(fp)
-
+#Record the position and time of the launch site. This
+while start_time == '00:00:00' or start_lat == 0.0 or start_long == 0.0 or start_elev == 0.0:
+    print('Waiting for launch site values')
+    t.sleep(sleep_time)
+    (start_time,start_lat,start_long,start_elev) = oc.record_launch_values(fp)
+    
 #MAIN LOOP
 
 while True:
@@ -34,8 +43,7 @@ while True:
     
     new_telemetry = oc.add_telemetry(fp)
     telemetry.append(new_telemetry)
-    
-    print(telemetry)
+    #print(telemetry)
     
     #extract current values of the important quantities
         

@@ -6,6 +6,7 @@ Created on Tue Dec  5 09:09:55 2017
 """
 
 import os
+read_pos = 0
 
 def file_empty(filepath):
     try:
@@ -17,29 +18,30 @@ def file_empty(filepath):
 def read_properly(f):
     tmp = f.readline().split(',')
     
-    if tmp[0] != '$$YERRA':
-        return False
-    else:
+    if tmp[0] == '$$YERRA':
         return tmp
+    elif tmp[0] == '':
+        return ['end']
+    else:
+        return read_properly(f)
 
 #MODIFY THIS FILE TO CHECK IF THE VALUES MAKE SENSE
 
 def record_launch_values(filepath):
-    f = open(filepath)    
+    
+    global read_pos
+    
+    f = open(filepath)
+    f.seek(read_pos)  
     
     line = read_properly(f)
     
-    while line == False:
-        line = read_properly(f)
-
-    start_data = line
-
-    #assign data to variables
-
-    start_time = start_data[2]
-    start_lat = float(start_data[3])
-    start_long = float(start_data[4])
-    start_elev = float(start_data[5])
+    start_time = line[2]
+    start_lat = float(line[3])
+    start_long = float(line[4])
+    start_elev = float(line[5])
+    
+    read_pos = f.tell()
 
     f.close()
     
@@ -48,15 +50,13 @@ def record_launch_values(filepath):
 
 def add_telemetry(filepath):
     try:
-        f = open(filepath,'rb')    
-        f.seek(-78,2)
+        global read_pos
+        f = open(filepath,'r')    
+        f.seek(read_pos)
         
-        #convert last line into string
+        last_line = read_properly(f)  
         
-        ll = str(f.readline())
-        last_line = ll[2:-6].split(',')    
-        
-        #add to the telemetry list
+        read_pos = f.tell()
         
         f.close()
         
@@ -65,7 +65,7 @@ def add_telemetry(filepath):
                 float(last_line[7]), int(last_line[8]),float(last_line[9]),\
                 float(last_line[10]),last_line[11],last_line[12]]
         
-    except FileNotFoundError:
+    except (FileNotFoundError, IndexError):
         return [float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'), \
             float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan'),float('nan')]
     

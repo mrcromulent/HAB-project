@@ -60,3 +60,11 @@ tdelta = datetime.strptime('11:15:49', FMT) - datetime.strptime(start_time, FMT)
     dist = 2*R*math.sqrt(term_1 + term_2 * term_3)
 
     return [wind_lower_data[3],wind_upper_data[3],dist/dt]
+
+
+BINARY THING
+
+#convert last line into string
+        
+        ll = str(f.readline())
+        last_line = ll[2:-6].split(',')  
