@@ -8,7 +8,7 @@ import math
 earth_radius = 6371000 #m
 alt = 280
 
-def how_far(lat1,long1,lat2,long2):
+def how_far(lat1,long1,lat2 = -34.37435, long2 = 147.86021):
     del_lat = abs(lat1 - lat2) * math.pi / 180
     del_long = abs(long1 - long2) * math.pi / 180
 
@@ -25,4 +25,4 @@ def how_far(lat1,long1,lat2,long2):
     
     dist = 2*R*math.asin(math.sqrt(term_1 + term_2 * term_3))
     
-    return dist/1000
+    print('The distance is', dist/1000, 'km')

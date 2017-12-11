@@ -125,6 +125,8 @@ def splat(lat,long,alt,speed,heading,winds):
         h = open(outfile,'a')
         h.write(str(round(lat,6)) + ',' + str(round(long,6)) + ',')
         h.close()
+        
+        return (lat,long)
             
 
     except FileNotFoundError:

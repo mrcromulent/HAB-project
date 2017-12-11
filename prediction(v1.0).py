@@ -9,8 +9,9 @@ import time as t
 import landing
 import other_commands as oc
 import wind
+import how_far as hf
 
-fp = 'test.txt'
+fp = 'test2.txt'
 #fp = 'YERRALOON1_DATA\\telemetry.txt'
 
 #Quantities
@@ -18,7 +19,9 @@ rising = False
 telemetry = []
 winds = []
 wind_band_width = 100
-sleep_time = 0 #seconds. normally 12
+sleep_time = 0.001 #seconds
+prediction_gap = 0.01 #seconds
+the_time = 0
 
 start_time = '00:00:00'
 start_lat = 0.0
@@ -38,15 +41,13 @@ while start_time == '00:00:00' or start_lat == 0.0 or start_long == 0.0 or start
     
 #MAIN LOOP
     
-predictions_made =0
+predictions_made = 0
 
 while True:
     
     #add a new line to the telemetry list
     
     new_telemetry = oc.add_telemetry(fp)
-    #telemetry.append(new_telemetry)
-    #print(telemetry)
     
     #extract current values of the important quantities
         
@@ -67,7 +68,9 @@ while True:
         telemetry.append(new_telemetry)
         
         #If a band has been crossed ...
-        if (alt - wind_lower_data[3]) >= wind_band_width:    
+        if (alt - wind_lower_data[3]) >= wind_band_width:
+            
+            #wind.make_new_band
             
             # ... record the current data
             wind_upper_data = [time,lat,long,alt,speed,heading]
@@ -79,19 +82,21 @@ while True:
             #reset the lower band data
             wind_lower_data = wind_upper_data[:]
             
-            #predict the landing site
+        #predict the landing site
         
+        if (t.time() - the_time) >= prediction_gap:
             #this prediction needs to happen less often
-            landing.splat(lat,long,alt,speed,heading,winds)
+            (lat1,long1) = landing.splat(lat,long,alt,speed,heading,winds)
             predictions_made += 1
+            the_time = t.time()
+            
+            hf.how_far(lat1,long1)
         
-        #Find some way to transmit prediction?
+            #Find some way to transmit prediction?
         
     if len(telemetry) > 7000: #flight must be over by now (10000 might be needed for longer flights)
         break
         
     #put the code to sleep until new data is expected
     t.sleep(sleep_time)
-        
-
-        
+    
