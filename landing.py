@@ -7,9 +7,11 @@ Created on Tue Dec  5 08:59:41 2017
 
 from math import exp, pi, sqrt, sin, cos, asin
 
-g_0 = 9.80665
-R_star = 8.3144598
-M = 0.0289644
+earth_radius = 6371000 #m
+temora_alt = 280 #m
+g_0 = 9.80665 #m/s^2
+R_star = 8.3144598 #gas constant
+M = 0.0289644 #molar mass
 
 parachute_rad = 0.3048 #1 foot in meters
 parachute_area = pi * parachute_rad ** 2
@@ -22,7 +24,7 @@ pay_m = 0.5
 bal_m = 1.0
 oth_m = 0.3
 
-m = pay_m + oth_m + 0.05 * bal_m #DESCENT MASS 
+descent_m = pay_m + oth_m + 0.05 * bal_m #DESCENT MASS 
 
 outfile = 'prediction.txt'
 
@@ -85,7 +87,7 @@ def find_bandchange(windband,v0):
     alti = alt_upper
     
     for i in range (0,1000):
-        a = 1/m * (drag_at_alt(alti,v0) - g_0)
+        a = 1/descent_m * (drag_at_alt(alti,v0) - g_0)
         
         dt = (-v0 - sqrt(v0 ** 2 + 2 * a * band_section))/a
         
@@ -129,11 +131,11 @@ def splat(lat,long,alt,speed,heading,winds):
 
     except FileNotFoundError:
         h.close()
-    
-earth_radius = 6371000 #m
-alt = 280
 
-def how_far(lat1,long1,time,lat2 = -34.37435, long2 = 147.86021):
+def how_far(prediction,time,lat2 = -34.37435, long2 = 147.86021):
+    lat1 = prediction[0]
+    long1 = prediction[1]
+    
     del_lat = abs(lat1 - lat2) * pi / 180
     del_long = abs(long1 - long2) * pi / 180
 
@@ -142,7 +144,7 @@ def how_far(lat1,long1,time,lat2 = -34.37435, long2 = 147.86021):
     
     #find the radius from the centre of the earth
     
-    R = earth_radius + alt
+    R = earth_radius + temora_alt
     
     term_1 = (sin(del_lat/2)) ** 2
     term_2 = cos(lat_lower) * cos(lat_upper)
@@ -150,4 +152,4 @@ def how_far(lat1,long1,time,lat2 = -34.37435, long2 = 147.86021):
     
     dist = 2*R*asin(sqrt(term_1 + term_2 * term_3))
     
-    print(time, 'Distance:', dist/1000, 'km')
+    return [time,dist/1000]

@@ -9,9 +9,10 @@ import time as t
 import landing
 import other_commands as oc
 import wind
-import how_far as hf
+import matplotlib.pyplot as plt
+import numpy as np
 
-fp = 'test.txt'
+fp = 'test2.txt'
 #fp = 'YERRALOON1_DATA\\telemetry.txt'
 
 #Quantities
@@ -20,8 +21,8 @@ telemetry = []
 winds = []
 wind_band_width = 100
 sleep_time = 0.001 #seconds
-prediction_gap = 0.01 #seconds
-the_time = 0
+prediction_gap = 0.05 #seconds
+last_prediction_time = 0
 
 start_time = '00:00:00'
 start_lat = 0.0
@@ -42,6 +43,8 @@ while start_time == '00:00:00' or start_lat == 0.0 or start_long == 0.0 or start
 #MAIN LOOP
     
 predictions_made = 0
+how_far_list = []
+times_list = []
 
 while True:
     
@@ -84,13 +87,14 @@ while True:
             
         #predict the landing site
         
-        if (t.time() - the_time) >= prediction_gap:
-            #this prediction needs to happen less often
-            (lat1,long1) = landing.splat(lat,long,alt,speed,heading,winds)
-            predictions_made += 1
-            the_time = t.time()
+        if (t.time() - last_prediction_time) >= prediction_gap:
             
-            landing.how_far(lat1,long1,time)
+            prediction = landing.splat(lat,long,alt,speed,heading,winds)
+            predictions_made += 1
+            last_prediction_time = t.time()
+            
+            how_far_list.append(landing.how_far(prediction,time)[1])
+            times_list.append(landing.how_far(prediction,time)[0])
         
             #Find some way to transmit prediction?
         
@@ -100,3 +104,7 @@ while True:
     #put the code to sleep until new data is expected
     t.sleep(sleep_time)
     
+x = np.linspace(0,130,predictions_made)
+plt.xticks(x,times_list,rotation = 'vertical')
+plt.plot(x,how_far_list)
+plt.show()

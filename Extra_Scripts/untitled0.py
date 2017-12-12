@@ -5,5 +5,5 @@ Created on Mon Dec 11 19:35:41 2017
 @author: Pierre
 """
 
-for i in range(5,-1,-1):
-    print(i)
+def test_func():
+    return (1,2,3,4)
