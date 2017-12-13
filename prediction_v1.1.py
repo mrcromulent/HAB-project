@@ -12,12 +12,12 @@ import wind
 
 ################################################
 
-#import matplotlib.pyplot as plt
-#import numpy as np
-#
-#how_far_list = []
-#times_list = []
-#predictions_made = 0
+import matplotlib.pyplot as plt
+import numpy as np
+
+how_far_list = []
+times_list = []
+predictions_made = 0
 
 #################################################
 
@@ -35,7 +35,7 @@ last_prediction_time = 0
 telemetry_cutoff = 4000;
 
 
-#check if the file has any data written to it. If not, wait sleep_time seconds and try again
+#Check if the file has any data written to it. If not, wait sleep_time seconds and try again.
 while oc.file_empty(fp):
     print('Telemetry file empty or non-existant')
     t.sleep(sleep_time)
@@ -82,13 +82,11 @@ while len(telemetry) < telemetry_cutoff:
             prediction = landing.splat(state,winds)
             last_prediction_time = t.time()
             
-            landing.check_drag_coefficient()
-            
             #################################################
             
-#            how_far_list.append(landing.how_far(prediction,state[0])[1])
-#            times_list.append(landing.how_far(prediction,state[0])[0])
-#            predictions_made += 1
+            how_far_list.append(landing.how_far(prediction,state[0])[1])
+            times_list.append(landing.how_far(prediction,state[0])[0])
+            predictions_made += 1
             
             ##################################################
         
@@ -100,9 +98,9 @@ while len(telemetry) < telemetry_cutoff:
     
 ##############################################################
     
-#x = np.linspace(0,130,predictions_made)
-#plt.xticks(x,times_list,rotation = 'vertical')
-#plt.plot(x,how_far_list)
-#plt.show()
+x = np.linspace(0,130,predictions_made)
+plt.xticks(x,times_list,rotation = 'vertical')
+plt.plot(x,how_far_list)
+plt.show()
 
 ###############################################################

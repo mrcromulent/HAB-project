@@ -30,19 +30,17 @@ def record_launch_values(filepath):
     
     global read_pos
     
-    f = open(filepath)
-    f.seek(read_pos)  
-    
-    line = read_properly(f)
-    
-    start_time = line[2]
-    start_lat = float(line[3])
-    start_long = float(line[4])
-    start_elev = float(line[5])
-    
-    read_pos = f.tell()
-
-    f.close()
+    with open(filepath) as f:
+        f.seek(read_pos)  
+        
+        line = read_properly(f)
+        
+        start_time = line[2]
+        start_lat = float(line[3])
+        start_long = float(line[4])
+        start_elev = float(line[5])
+        
+        read_pos = f.tell()    
     
     return (start_time,start_lat,start_long,start_elev)
 
@@ -52,15 +50,13 @@ def add_telemetry(filepath):
         global read_pos
         global safe_line
         
-        f = open(filepath,'r')    
-        f.seek(read_pos)
-        
-        last_line = read_properly(f)  
-        
-        read_pos = f.tell()
-        
-        f.close()
-        
+        with open(filepath,'r') as f:
+            
+            f.seek(read_pos)
+            last_line = read_properly(f)  
+            read_pos = f.tell()
+            
+            
         if false_telemetry(filepath,[last_line[2],float(last_line[3]),\
                 float(last_line[4]),float(last_line[5]),float(last_line[6]),\
                 float(last_line[7])]):
@@ -73,11 +69,9 @@ def add_telemetry(filepath):
         
         return safe_line
         
-    except (FileNotFoundError, IndexError,ValueError):
+    except (IndexError,ValueError):
         return safe_line
     
-    finally:
-        f.close()
 
 def false_telemetry(filepath,state = None):
     
@@ -88,4 +82,4 @@ def false_telemetry(filepath,state = None):
     else:
         [time,lat,long,alt,speed,heading] = state[:] #state variable
         
-        return (not(-40 < lat < 0) or not(110 < long < 155) or alt < 0)
+        return (not(-40 < lat < 0) or not(110 < long < 155) or alt < 1)

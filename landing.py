@@ -25,8 +25,6 @@ oth_m = 0.3
 
 descent_m = pay_m + oth_m + 0.05 * bal_m #DESCENT MASS 
 
-outfile = 'prediction.txt'
-
 def density_at_alt(alt):
     
     #altitutde is given in m above mean sea level
@@ -107,28 +105,23 @@ def how_many_bands(winds,alt):
 
 def splat(state,winds):
     
-    try:
-        [time,lat,long,alt,speed,heading] = state[:]
+    [time,lat,long,alt,speed,heading] = state[:]
+    
+    num_bands = how_many_bands(winds,alt)
+    
+    for i in range(num_bands-1,-1,-1):
         
-        num_bands = how_many_bands(winds,alt)
+        [delta_lat,delta_long,new_alt,new_speed] = find_bandchange(winds[i],speed)
         
-        for i in range(num_bands-1,-1,-1):
-            
-            [delta_lat,delta_long,new_alt,new_speed] = find_bandchange(winds[i],speed)
-            
-            lat = lat + delta_lat
-            long = long + delta_long
-            speed = new_speed
-            
-        h = open(outfile,'a')
+        lat = lat + delta_lat
+        long = long + delta_long
+        speed = new_speed
+        
+    with open('prediction.txt','a') as h:
         h.write(str(round(lat,6)) + ',' + str(round(long,6)) + ',')
-        h.close()
-        
-        return (lat,long)
+    
+    return (lat,long)
             
-
-    except FileNotFoundError:
-        h.close()
 
 def how_far(prediction,time,lat2 = -34.37435, long2 = 147.859):
     

@@ -7,38 +7,29 @@ Created on Mon Dec  4 13:05:27 2017
 
 import time
 
-URL = 'YERRALOON1_DATA\\telemetry.txt'
 sleep_time = 0
 
-
-for i in range(0,6000):
-    
-    #ignore the first line
-    if i == 0:
-        f = open(URL,'r')
-        f.seek(0)
-
-    line = f.readline()
-    
-    g = open('test.txt','a')
-    
-    if line[0] == 'F':
-        g.write(line) #Free space line
-        line = f.readline()
-        g.write(line) #Yerra line
-        line = f.readline()
-        g.write(line) #XX line
+with open('YERRALOON1_DATA\\telemetry.txt') as f:
+    for i in range(0,6000):
+        if i == 0:
+            f.seek(0)
         
-    elif line[0:3] == '$$Y':
-        g.write(line) #Yerra line
         line = f.readline()
-        g.write(line) #XX line
-    else:
-        g.write(line) #XX line        
-    
-    g.close()
         
-    time.sleep(sleep_time)
-    
-
-f.close()
+        with open('test.txt','a') as g:
+            if line[0] == 'F':
+                g.write(line) #Free space line
+                line = f.readline()
+                g.write(line) #Yerra line
+                line = f.readline()
+                g.write(line) #XX line
+                
+            elif line[0:3] == '$$Y':
+                g.write(line) #Yerra line
+                line = f.readline()
+                g.write(line) #XX line
+            else:
+                g.write(line) #XX line
+            
+ 
+time.sleep(sleep_time)
