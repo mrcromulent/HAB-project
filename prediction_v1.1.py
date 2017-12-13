@@ -12,9 +12,6 @@ import wind
 
 ################################################
 
-import cProfile
-cProfile.run('foo()')
-
 #import matplotlib.pyplot as plt
 #import numpy as np
 #
@@ -33,7 +30,7 @@ telemetry = []
 winds = []
 wind_band_width = 100
 sleep_time = 0.001 #seconds
-prediction_gap = 0.015 #seconds
+prediction_gap = 0.08 #seconds
 last_prediction_time = 0
 telemetry_cutoff = 4000;
 
@@ -84,6 +81,8 @@ while len(telemetry) < telemetry_cutoff:
             
             prediction = landing.splat(state,winds)
             last_prediction_time = t.time()
+            
+            landing.check_drag_coefficient()
             
             #################################################
             

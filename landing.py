@@ -15,8 +15,8 @@ parachute_rad = 0.3048 #1 foot in meters
 parachute_area = pi * parachute_rad ** 2
 payload_area = 0.3 * 0.3
 
-#C = 0.3 #from http://randomaerospace.com/Random_Aerospace/Balloons.html
 C = 1.75 #from https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/rktvrecv.html
+C_box = 1.15 #from https://www.engineersedge.com/fluid_flow/rectangular_flat_plate_drag_14036.htm
 
 #mass parameters
 pay_m = 0.5
@@ -71,7 +71,7 @@ def drag_at_alt(alt,descent_rate):
     
     rho = density_at_alt(alt)
     
-    return 0.5 * C * rho * descent_rate ** 2 * (parachute_area + payload_area)
+    return 0.5 * C * rho * descent_rate ** 2 * parachute_area + 0.5 * C_box * rho * descent_rate ** 2 * payload_area
 
 def find_bandchange(windband,v0):
     
@@ -147,3 +147,5 @@ def how_far(prediction,time,lat2 = -34.37435, long2 = 147.859):
     dist = R*c
     
     return [time,dist]
+
+
