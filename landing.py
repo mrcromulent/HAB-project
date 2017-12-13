@@ -5,10 +5,8 @@ Created on Tue Dec  5 08:59:41 2017
 @author: Pierre
 """
 
-from math import exp, pi, sqrt, sin, cos, asin
+from math import exp, pi, sqrt, sin, cos, asin, radians
 
-earth_radius = 6371000 #m
-temora_alt = 280 #m
 g_0 = 9.80665 #m/s^2
 R_star = 8.3144598 #gas constant
 M = 0.0289644 #molar mass
@@ -17,7 +15,8 @@ parachute_rad = 0.3048 #1 foot in meters
 parachute_area = pi * parachute_rad ** 2
 payload_area = 0.3 * 0.3
 
-C = 0.3 #from http://randomaerospace.com/Random_Aerospace/Balloons.html
+#C = 0.3 #from http://randomaerospace.com/Random_Aerospace/Balloons.html
+C = 1.75 #from https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/rktvrecv.html
 
 #mass parameters
 pay_m = 0.5
@@ -69,16 +68,14 @@ def density_at_alt(alt):
         return p_b * exp(exponent)
 
 def drag_at_alt(alt,descent_rate):
+    
     rho = density_at_alt(alt)
     
     return 0.5 * C * rho * descent_rate ** 2 * (parachute_area + payload_area)
 
 def find_bandchange(windband,v0):
     
-    alt_lower = windband[0]
-    alt_upper = windband[1]
-    d_lat_dt = windband[2]
-    d_long_dt = windband[3]
+    [alt_lower,alt_upper,d_lat_dt,d_long_dt] = windband[:]
     
     bandwidth =  alt_upper - alt_lower
     band_section = -0.001 * bandwidth
@@ -93,9 +90,9 @@ def find_bandchange(windband,v0):
         
         sum_t += dt
         
-        alti -= band_section
+        alti += band_section
         v0 = v0 + a * dt
-    
+
     delta_lat = d_lat_dt * sum_t
     delta_long = d_long_dt * sum_t
     
@@ -108,12 +105,12 @@ def how_many_bands(winds,alt):
 
     return len(winds)
 
-def splat(lat,long,alt,speed,heading,winds):
+def splat(state,winds):
     
     try:
-        num_bands = how_many_bands(winds,alt)
+        [time,lat,long,alt,speed,heading] = state[:]
         
-        #to_ground = how_many_bands(winds, alt)
+        num_bands = how_many_bands(winds,alt)
         
         for i in range(num_bands-1,-1,-1):
             
@@ -121,6 +118,7 @@ def splat(lat,long,alt,speed,heading,winds):
             
             lat = lat + delta_lat
             long = long + delta_long
+            speed = new_speed
             
         h = open(outfile,'a')
         h.write(str(round(lat,6)) + ',' + str(round(long,6)) + ',')
@@ -132,24 +130,20 @@ def splat(lat,long,alt,speed,heading,winds):
     except FileNotFoundError:
         h.close()
 
-def how_far(prediction,time,lat2 = -34.37435, long2 = 147.86021):
-    lat1 = prediction[0]
-    long1 = prediction[1]
+def how_far(prediction,time,lat2 = -34.37435, long2 = 147.859):
     
-    del_lat = abs(lat1 - lat2) * pi / 180
-    del_long = abs(long1 - long2) * pi / 180
+    R = 6371 + 0.280 #km. Earth radius + temora altitude
+    
+    [lat1,long1] = prediction[:]
+    
+    del_lat = radians(lat1 - lat2)
+    del_long = radians(long1 - long2)
 
-    lat_lower = lat1 * pi / 180
-    lat_upper = lat2 * pi / 180
+    lat1 = radians(lat1)
+    lat2 = radians(lat2)
     
-    #find the radius from the centre of the earth
+    a = sin(del_lat/2)**2 + cos(lat1)*cos(lat2)*sin(del_long/2)**2
+    c = 2*asin(sqrt(a))
+    dist = R*c
     
-    R = earth_radius + temora_alt
-    
-    term_1 = (sin(del_lat/2)) ** 2
-    term_2 = cos(lat_lower) * cos(lat_upper)
-    term_3 = (sin(del_long/2)) ** 2
-    
-    dist = 2*R*asin(sqrt(term_1 + term_2 * term_3))
-    
-    return [time,dist/1000]
+    return [time,dist]

@@ -11,7 +11,7 @@ URL = 'YERRALOON1_DATA\\telemetry.txt'
 sleep_time = 0
 
 
-for i in range(0,10000):
+for i in range(0,6000):
     
     #ignore the first line
     if i == 0:

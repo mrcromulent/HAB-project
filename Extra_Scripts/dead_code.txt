@@ -68,3 +68,34 @@ BINARY THING
         
         ll = str(f.readline())
         last_line = ll[2:-6].split(',')  
+
+
+
+
+
+
+
+
+
+
+
+
+x = np.linspace(0,130,predictions_made)
+plt.xticks(x,times_list,rotation = 'vertical')
+plt.plot(x,how_far_list)
+plt.show()
+
+            how_far_list.append(landing.how_far(prediction,time)[1])
+            times_list.append(landing.how_far(prediction,time)[0])
+
+how_far_list = []
+times_list = []
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+ #   time = new_telemetry[2]
+ #   lat = new_telemetry[3]
+ #   long = new_telemetry[4]
+ #   speed = new_telemetry[6]
+ #   heading = new_telemetry[7]

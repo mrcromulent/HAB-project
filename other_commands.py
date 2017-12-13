@@ -61,6 +61,11 @@ def add_telemetry(filepath):
         
         f.close()
         
+        if false_telemetry(filepath,[last_line[2],float(last_line[3]),\
+                float(last_line[4]),float(last_line[5]),float(last_line[6]),\
+                float(last_line[7])]):
+            raise ValueError
+        
         safe_line = [last_line[0],last_line[1],last_line[2], float(last_line[3]),\
                 float(last_line[4]),float(last_line[5]),float(last_line[6]),\
                 float(last_line[7]), int(last_line[8]),float(last_line[9]),\
@@ -68,8 +73,19 @@ def add_telemetry(filepath):
         
         return safe_line
         
-    except (FileNotFoundError, IndexError):
+    except (FileNotFoundError, IndexError,ValueError):
         return safe_line
     
     finally:
         f.close()
+
+def false_telemetry(filepath,state = None):
+    
+    if state == None:
+        (start_time,start_lat,start_long,start_elev) = record_launch_values(filepath)
+        return (start_time == '00:00:00' or start_lat == 0.0 or start_long == 0.0 or start_elev == 0.0)
+    
+    else:
+        [time,lat,long,alt,speed,heading] = state[:] #state variable
+        
+        return (not(-40 < lat < 0) or not(110 < long < 155) or alt < 0)

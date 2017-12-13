@@ -23,3 +23,17 @@ def calc_windspeed(wind_lower_data,wind_upper_data):
 
     
     return [wind_lower_data[3],wind_upper_data[3],deg_lat/dt,deg_long/dt]
+
+def make_new_band(state,wind_lower_data,winds):
+    
+    # ... record the current data
+    wind_upper_data = state[:]
+
+    #calculate the windspeeds (in deg/s) and add it to the list
+    new_wind = calc_windspeed(wind_lower_data,wind_upper_data)
+    winds.append(new_wind)
+    
+    #reset the lower band data
+    wind_lower_data = wind_upper_data[:]
+    
+    return [winds,wind_lower_data]
