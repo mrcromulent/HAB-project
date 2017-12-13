@@ -21,6 +21,8 @@ predictions_made = 0
 
 #################################################
 
+#Telemetry file location
+
 #fp = 'test2.txt'
 fp = 'YERRALOON1_DATA\\telemetry.txt'
 
@@ -29,36 +31,35 @@ rising = False
 telemetry = []
 winds = []
 wind_band_width = 100
-sleep_time = 0.001 #seconds
-prediction_gap = 0.08 #seconds
+sleep_time = 0.001 #seconds. Usually 1.
+prediction_gap = 0.015 #seconds
 last_prediction_time = 0
 telemetry_cutoff = 4000;
 
 
 #Check if the file has any data written to it. If not, wait sleep_time seconds and try again.
 while oc.file_empty(fp):
-    print('Telemetry file empty or non-existant')
+    print('Telemetry file empty or non-existant.')
     t.sleep(sleep_time)
 
 #Record the position and time of the launch site, ignoring false telemetry
 while oc.false_telemetry(fp):
-    print('Waiting for launch site values')
+    print('Waiting for launch site values. Ignoring false telemetry.')
     t.sleep(sleep_time)
 
 (start_time,start_lat,start_long,start_elev) = oc.record_launch_values(fp)
     
 #MAIN LOOP
-    
 while len(telemetry) < telemetry_cutoff:
     
-    #add a new line to the telemetry list    
+    #Add a new line to the telemetry list    
     new_telemetry = oc.add_telemetry(fp)
     
-    #extract the relevant quantities
+    #Extract the the current altitude and state (state = [time,lat,long,alt,speed,heading])
     state = new_telemetry[2:8]
     alt = new_telemetry[5]
     
-    #Detect when the balloon has started to lift off, set the lower wind band data
+    #Detect when the balloon has started to lift off - set the lower wind band data
     if rising == False and (alt - start_elev) > 100:
         rising = True
         wind_lower_data = state[:]

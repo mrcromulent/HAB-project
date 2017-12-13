@@ -19,10 +19,13 @@ def calc_windspeed(wind_lower_data,wind_upper_data):
     #Convert latitutde and longitude data to radians
     
     deg_lat = (wind_upper_data[1] - wind_lower_data[1])
-    deg_long = (wind_upper_data[2] - wind_lower_data[2]) 
+    deg_long = (wind_upper_data[2] - wind_lower_data[2])
+    
+    lower_elev = wind_lower_data[3]
+    upper_elev = wind_upper_data[3]
 
     
-    return [wind_lower_data[3],wind_upper_data[3],deg_lat/dt,deg_long/dt]
+    return [lower_elev,upper_elev,deg_lat/dt,deg_long/dt]
 
 def make_new_band(state,wind_lower_data,winds):
     

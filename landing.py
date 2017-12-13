@@ -7,27 +7,28 @@ Created on Tue Dec  5 08:59:41 2017
 
 from math import exp, pi, sqrt, sin, cos, asin, radians
 
-g_0 = 9.80665 #m/s^2
+g_0 = 9.80665 # m/s^2
 R_star = 8.3144598 #gas constant
 M = 0.0289644 #molar mass
-
-parachute_rad = 0.3048 #1 foot in meters
-parachute_area = pi * parachute_rad ** 2
+R = 6371 + 0.280 #km. Earth radius + temora altitude
+ 
+parachute_area = pi * 0.3048 ** 2 #r = 1 foot in meters
 payload_area = 0.3 * 0.3
 
 C = 1.75 #from https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/rktvrecv.html
 C_box = 1.15 #from https://www.engineersedge.com/fluid_flow/rectangular_flat_plate_drag_14036.htm
 
-#mass parameters
-pay_m = 0.5
+#mass parameters of the balloon
+pay_m = 1.0
 bal_m = 1.0
-oth_m = 0.3
+oth_m = 0.4
 
 descent_m = pay_m + oth_m + 0.05 * bal_m #DESCENT MASS 
 
 def density_at_alt(alt):
     
     #altitutde is given in m above mean sea level
+    #from https://en.wikipedia.org/wiki/Barometric_formula
     
     if 0 <= alt < 11000:
         p_b = 1.2250
@@ -69,17 +70,24 @@ def drag_at_alt(alt,descent_rate):
     
     rho = density_at_alt(alt)
     
-    return 0.5 * C * rho * descent_rate ** 2 * parachute_area + 0.5 * C_box * rho * descent_rate ** 2 * payload_area
+    return 0.5 * descent_rate ** 2 * rho * (C * parachute_area + C_box * payload_area)
 
 def find_bandchange(windband,v0):
     
-    [alt_lower,alt_upper,d_lat_dt,d_long_dt] = windband[:]
+    #extract data from the windband
+    
+    [alt_lower,alt_upper,dLat_dt,dLong_dt] = windband[:]
     
     bandwidth =  alt_upper - alt_lower
+    
+    #split the windband into band_sections...
+    
     band_section = -0.001 * bandwidth
     
     sum_t = 0
     alti = alt_upper
+    
+    #...and find the time spent in each using kinematic equations
     
     for i in range (0,1000):
         a = 1/descent_m * (drag_at_alt(alti,v0) - g_0)
@@ -90,9 +98,12 @@ def find_bandchange(windband,v0):
         
         alti += band_section
         v0 = v0 + a * dt
-
-    delta_lat = d_lat_dt * sum_t
-    delta_long = d_long_dt * sum_t
+    
+    #find the bandchange by multiplying the rate of change of latitude ...
+    #and longitude by the total time spent, sum_t
+    
+    delta_lat = dLat_dt * sum_t
+    delta_long = dLong_dt * sum_t
     
     return [delta_lat,delta_long,alt_lower,v0]
 
@@ -105,9 +116,15 @@ def how_many_bands(winds,alt):
 
 def splat(state,winds):
     
+    #extract the relevant quantities from the arguments
+    
     [time,lat,long,alt,speed,heading] = state[:]
     
+    #find the number of bands below the payload
+    
     num_bands = how_many_bands(winds,alt)
+    
+    #call find_bandchange on each band and sum the results
     
     for i in range(num_bands-1,-1,-1):
         
@@ -117,6 +134,8 @@ def splat(state,winds):
         long = long + delta_long
         speed = new_speed
         
+    #write the results to the prediction file and return the current precition
+        
     with open('prediction.txt','a') as h:
         h.write(str(round(lat,6)) + ',' + str(round(long,6)) + ',')
     
@@ -125,7 +144,10 @@ def splat(state,winds):
 
 def how_far(prediction,time,lat2 = -34.37435, long2 = 147.859):
     
-    R = 6371 + 0.280 #km. Earth radius + temora altitude
+    #this function finds the distance between any two points of latitude and longitude
+    #default arguments are for YERRALOON1's landing site.
+    
+    #Forumula from https://www.movable-type.co.uk/scripts/latlong.html
     
     [lat1,long1] = prediction[:]
     
