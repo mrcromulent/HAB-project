@@ -137,7 +137,7 @@ def splat(state,winds):
     #write the results to the prediction file and return the current precition
         
     with open('prediction.txt','a') as h:
-        h.write(str(round(lat,6)) + ',' + str(round(long,6)) + ',')
+        h.write(time + ',' + str(round(lat,6)) + ',' + str(round(long,6)) + '\n')
     
     return (lat,long)
             
