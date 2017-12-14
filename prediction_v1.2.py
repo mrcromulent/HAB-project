@@ -32,7 +32,7 @@ telemetry = []
 winds = []
 wind_band_width = 100
 sleep_time = 0.001 #seconds. Usually 1.
-prediction_gap = 0.015 #seconds
+prediction_gap = 0.09 #seconds
 last_prediction_time = 0
 telemetry_cutoff = 4000;
 
@@ -102,6 +102,8 @@ while len(telemetry) < telemetry_cutoff:
 x = np.linspace(0,130,predictions_made)
 plt.xticks(x,times_list,rotation = 'vertical')
 plt.plot(x,how_far_list)
+plt.ylabel('Error in landing site prediction [km]')
+plt.xlabel('Time [GMT, equivalent to AEDT - 11]')
 plt.show()
 
 ###############################################################
