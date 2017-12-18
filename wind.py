@@ -6,11 +6,9 @@ Created on Tue Dec  5 13:33:53 2017
 """
 
 from datetime import datetime
-from math import pi
 import landing
 FMT = '%H:%M:%S' #datetime format
 v0 = 0
-area_burst = 0.3 ** 2 + 4/2 * pi * (0.3) ** 2
 
 
 def calc_windspeed(wind_lower_data,wind_upper_data):
@@ -31,11 +29,10 @@ def calc_windspeed(wind_lower_data,wind_upper_data):
     ######################################
     
 #    alt = 0.5 * (lower_elev + upper_elev)
-#    area_unburst = landing.system_area_at_alt(alt)
-#    ac = area_burst/area_unburst
+#    ac = landing.ac_at_alt(alt)
 #    
 #    return [lower_elev,upper_elev,ac*deg_lat/dt,ac*deg_long/dt]
-#    
+    
     ######################################
     
     return [lower_elev,upper_elev,deg_lat/dt,deg_long/dt]
@@ -68,6 +65,12 @@ def refine_drag_coeff(wind_lower_data,state,winds):
     wind_lower_data = state[:]
     
     landing.C = landing.C * (actual_time/estimated_time)
+    
+    if landing.C > 2:
+        landing.C = 2
+        
+    elif landing.C < 0.5:
+        landing.C = 0.5
     
     return wind_lower_data
     

@@ -216,8 +216,10 @@ def radius_at_alt(alt):
     
     return ((3 * n * R_star * T)/(4 * pi * P)) ** (1/3)
 
-def system_area_at_alt(alt):
+def ac_at_alt(alt):
     
     balloon_radius = radius_at_alt(alt)
+    area_unburst = payload_area + pi * (balloon_radius) ** 2
+    area_burst = payload_area + parachute_area
     
-    return payload_area + 4/2 * pi * (balloon_radius) ** 2
+    return area_burst/area_unburst

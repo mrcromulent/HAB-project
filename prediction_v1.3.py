@@ -18,6 +18,7 @@ import numpy as np
 how_far_list = []
 times_list = []
 predictions_made = 0
+calc_times = []
 
 #################################################
 
@@ -51,6 +52,8 @@ while oc.false_telemetry(fp):
 #MAIN LOOP
 while len(telemetry) < telemetry_cutoff:
     
+    calc_time_start = t.time()
+    
     #Add a new line to the telemetry list    
     new_telemetry = oc.add_telemetry(fp)
     
@@ -78,10 +81,10 @@ while len(telemetry) < telemetry_cutoff:
             
         ##################################################
         
-#        #if the payload is falling, find the parachute effectiveness
-#        elif (wind_lower_data[3] - alt) >= wind_band_width:
-#            
-#            wind_lower_data = wind.refine_drag_coeff(wind_lower_data,state,winds)
+        #if the payload is falling, find the parachute effectiveness
+        elif (wind_lower_data[3] - alt) >= wind_band_width:
+            
+            wind_lower_data = wind.refine_drag_coeff(wind_lower_data,state,winds)
  
         ##################################################           
         
@@ -102,10 +105,20 @@ while len(telemetry) < telemetry_cutoff:
             ##################################################
         
             #Find some way to transmit prediction?
+            
+###################################################
     
-    #put the code to sleep until new data is expected
-    t.sleep(sleep_time)
+    calc_time = t.time() - calc_time_start
+    calc_times.append(calc_time)
     
+    if calc_time <= sleep_time:
+        
+        #put the code to sleep until new data is expected
+        t.sleep(sleep_time - calc_time)
+        
+######################################################
+        
+    #t.sleep(sleep_time)
     
 ##############################################################
     
@@ -115,5 +128,9 @@ plt.plot(x,how_far_list)
 plt.ylabel('Error in landing site prediction [km]')
 plt.xlabel('Time [GMT, equivalent to AEDT - 11]')
 plt.show()
+a = sorted(calc_times,reverse = True)
+a2 = [i for i in a if i > 0]
+longest_comp = a2[0]
+average_comp = sum(a2)/float(len(a2))
 
 ###############################################################
