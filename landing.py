@@ -8,8 +8,9 @@ Created on Tue Dec  5 08:59:41 2017
 from math import exp, pi, sqrt, sin, cos, asin, radians
 
 g_0 = 9.80665 # m/s^2
-R_star = 8.3144598 #gas constant
-M = 0.0289644 #molar mass
+R_star = 8.3144598 #gas constant, m^3 Pa/ K / mol
+M = 0.0289644 #molar mass of air
+M_helium = 0.004 #kg/mol
 R = 6371 + 0.280 #km. Earth radius + temora altitude
  
 parachute_area = pi * 0.3048 ** 2 #r = 1 foot in meters
@@ -19,11 +20,13 @@ C = 1.75 #from https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airpla
 C_box = 1.15 #from https://www.engineersedge.com/fluid_flow/rectangular_flat_plate_drag_14036.htm
 
 #mass parameters of the balloon
-pay_m = 1.0
-bal_m = 1.0
-oth_m = 0.4
+pay_m = 1.2
+bal_m = 1.2
+gas_m = 0.684 #kg, estimated from https://www.webqc.org/ideal_gas_law.html
 
-descent_m = pay_m + oth_m + 0.05 * bal_m #DESCENT MASS 
+n = gas_m / M_helium
+
+descent_m = pay_m + 0.05 * bal_m #DESCENT MASS 
 
 def density_at_alt(alt):
     
@@ -71,6 +74,7 @@ def drag_at_alt(alt,descent_rate):
     rho = density_at_alt(alt)
     
     return 0.5 * descent_rate ** 2 * rho * (C * parachute_area + C_box * payload_area)
+    #return 0.5 * C * descent_rate ** 2 * rho * (parachute_area + payload_area)
 
 def find_bandchange(windband,v0):
     
@@ -105,7 +109,7 @@ def find_bandchange(windband,v0):
     delta_lat = dLat_dt * sum_t
     delta_long = dLong_dt * sum_t
     
-    return [delta_lat,delta_long,alt_lower,v0]
+    return [sum_t,delta_lat,delta_long,alt_lower,v0]
 
 def how_many_bands(winds,alt):
     for i in range(0,len(winds)):
@@ -128,7 +132,7 @@ def splat(state,winds):
     
     for i in range(num_bands-1,-1,-1):
         
-        [delta_lat,delta_long,new_alt,new_speed] = find_bandchange(winds[i],speed)
+        [_,delta_lat,delta_long,new_alt,new_speed] = find_bandchange(winds[i],speed)
         
         lat = lat + delta_lat
         long = long + delta_long
@@ -161,6 +165,59 @@ def how_far(prediction,time,lat2 = -34.37435, long2 = 147.859):
     c = 2*asin(sqrt(a))
     dist = R*c
     
-    return [time,dist]
+    return [time,dist] 
 
+def temp_press_at_alt(alt):
+    #from https://www.grc.nasa.gov/www/k-12/rocket/atmosmet.html
+    
+    if 0 <= alt < 11000:
+        P_b = 101325 #Pa
+        T_b = 288.15 #K
+        L_b = -0.0065
+        h_b = 0
+        
+    elif 11000 <= alt < 20000:
+        P_b = 22632.10
+        T_b = 216.65
+        L_b = 0
+        h_b = 11000
+        
+    elif 20000 <= alt < 32000:
+        P_b = 5474.89
+        T_b = 216.65
+        L_b = 0.001
+        h_b = 20000
+        
+    elif 32000 <= alt < 47000:
+        P_b = 868.02
+        T_b = 288.65
+        L_b = 0.0028
+        h_b = 32000
+        
+    if L_b != 0:
+        
+        fraction = T_b / (T_b + L_b*(alt - h_b))
+        exponent = (g_0 * M)/(R_star * L_b)
+        
+        P = P_b * (fraction) ** exponent
+        
+        return [T_b,P]
+    
+    if L_b == 0:
+        exponent = (-g_0 * M * (alt - h_b))/(R_star * T_b)
+        
+        P = P_b * exp(exponent)
+        
+        return [T_b,P]
 
+def radius_at_alt(alt):
+    
+    [T,P] = temp_press_at_alt(alt)
+    
+    return ((3 * n * R_star * T)/(4 * pi * P)) ** (1/3)
+
+def system_area_at_alt(alt):
+    
+    balloon_radius = radius_at_alt(alt)
+    
+    return payload_area + 4/2 * pi * (balloon_radius) ** 2

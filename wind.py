@@ -6,10 +6,14 @@ Created on Tue Dec  5 13:33:53 2017
 """
 
 from datetime import datetime
+from math import pi
+import landing
+FMT = '%H:%M:%S' #datetime format
+v0 = 0
+area_burst = 0.3 ** 2 + 4/2 * pi * (0.3) ** 2
+
 
 def calc_windspeed(wind_lower_data,wind_upper_data):
-    
-    FMT = '%H:%M:%S' #datetime format
     
     #find the time differences between the top and bottom of the band
     
@@ -23,7 +27,16 @@ def calc_windspeed(wind_lower_data,wind_upper_data):
     
     lower_elev = wind_lower_data[3]
     upper_elev = wind_upper_data[3]
-
+    
+    ######################################
+    
+#    alt = 0.5 * (lower_elev + upper_elev)
+#    area_unburst = landing.system_area_at_alt(alt)
+#    ac = area_burst/area_unburst
+#    
+#    return [lower_elev,upper_elev,ac*deg_lat/dt,ac*deg_long/dt]
+#    
+    ######################################
     
     return [lower_elev,upper_elev,deg_lat/dt,deg_long/dt]
 
@@ -40,3 +53,21 @@ def make_new_band(state,wind_lower_data,winds):
     wind_lower_data = wind_upper_data[:]
     
     return [winds,wind_lower_data]
+
+def refine_drag_coeff(wind_lower_data,state,winds):
+    
+    global v0
+    
+    at = datetime.strptime(state[0], FMT) - datetime.strptime(wind_lower_data[0], FMT)
+    actual_time = at.total_seconds()
+    
+    ind = landing.how_many_bands(winds,state[3])
+    
+    [estimated_time,_,_,_,v0] = landing.find_bandchange(winds[ind + 1],v0)
+    
+    wind_lower_data = state[:]
+    
+    landing.C = landing.C * (actual_time/estimated_time)
+    
+    return wind_lower_data
+    

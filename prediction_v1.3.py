@@ -22,9 +22,8 @@ predictions_made = 0
 #################################################
 
 #Telemetry file location
-
-#fp = 'test2.txt'
-fp = 'YERRALOON1_DATA\\telemetry.txt'
+fp = 'test.txt'
+#fp = 'YERRALOON1_DATA\\telemetry.txt'
 
 #Quantities
 rising = False
@@ -75,6 +74,17 @@ while len(telemetry) < telemetry_cutoff:
             #...Make a new wind band starting from the current location
             
             [winds,wind_lower_data] = wind.make_new_band(state,wind_lower_data,winds)
+            
+            
+        ##################################################
+        
+#        #if the payload is falling, find the parachute effectiveness
+#        elif (wind_lower_data[3] - alt) >= wind_band_width:
+#            
+#            wind_lower_data = wind.refine_drag_coeff(wind_lower_data,state,winds)
+ 
+        ##################################################           
+        
             
         #If sufficient time has passed, predict the landing site
         

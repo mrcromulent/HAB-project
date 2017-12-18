@@ -7,7 +7,7 @@ Created on Mon Dec  4 13:05:27 2017
 
 import time
 
-sleep_time = 0
+sleep_time = 0.01
 
 with open('YERRALOON1_DATA\\telemetry.txt') as f:
     for i in range(0,6000):
@@ -32,4 +32,4 @@ with open('YERRALOON1_DATA\\telemetry.txt') as f:
                 g.write(line) #XX line
             
  
-time.sleep(sleep_time)
+    time.sleep(sleep_time)
