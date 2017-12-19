@@ -122,7 +122,7 @@ def splat(state,winds):
     
     #extract the relevant quantities from the arguments
     
-    [time,lat,long,alt,speed,heading] = state[:]
+    [time,lat,long,alt,speed,heading] = state[0:6]
     
     #find the number of bands below the payload
     

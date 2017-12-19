@@ -28,8 +28,15 @@ def calc_windspeed(wind_lower_data,wind_upper_data):
     
     ######################################
     
+    #extract average temperature and pressure. Convert to Pascal and Kelvin
+    
+#    press = 0.5 * 1000 * (wind_lower_data[7] + wind_upper_data[7])
+#    temp = 0.5 * (wind_lower_data[6]  + wind_upper_data[6]) + 273.2
+#    
 #    alt = 0.5 * (lower_elev + upper_elev)
-#    ac = landing.ac_at_alt(alt)
+#    ac = landing.ac_at_alt(alt,temp,press)
+#    
+#    print(alt,temp,press,ac)
 #    
 #    return [lower_elev,upper_elev,ac*deg_lat/dt,ac*deg_long/dt]
     
