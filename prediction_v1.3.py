@@ -23,8 +23,8 @@ calc_times = []
 #################################################
 
 #Telemetry file location
-fp = 'test.txt'
-#fp = 'YERRALOON1_DATA\\telemetry.txt'
+#fp = 'test.txt'
+fp = 'YERRALOON1_DATA\\telemetry.txt'
 
 #Quantities
 rising = False
@@ -32,9 +32,9 @@ telemetry = []
 winds = []
 wind_band_width = 100
 sleep_time = 0.001 #seconds. Usually 1.
-prediction_gap = 0.09 #seconds
+prediction_gap = 0.01 #seconds
 last_prediction_time = 0
-telemetry_cutoff = 4000;
+telemetry_cutoff = 2000;
 
 
 #Check if the file has any data written to it. If not, wait sleep_time seconds and try again.
