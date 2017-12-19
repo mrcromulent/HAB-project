@@ -58,7 +58,7 @@ while len(telemetry) < telemetry_cutoff:
     new_telemetry = oc.add_telemetry(fp)
     
     #Extract the the current altitude and state (state = [time,lat,long,alt,speed,heading,temp,press])
-    state = new_telemetry[2:8] + new_telemetry[10:12]
+    state = new_telemetry[2:8] + new_telemetry[10:13]
     alt = new_telemetry[5]
     
     #Detect when the balloon has started to lift off - set the lower wind band data

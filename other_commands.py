@@ -28,6 +28,13 @@ def read_properly(f):
     tmp = f.readline().split(',')
     
     if tmp[0] == '$$YERRA':
+        
+        #split the last two elements before returning
+        
+        tmp2 = tmp[12].split('*')
+        tmp.pop()
+        tmp.extend(tmp2)
+        
         return tmp
     elif tmp[0] == '':
         return ['end']
@@ -62,7 +69,7 @@ def add_telemetry(filepath):
             
         new_line = [line[0],line[1],line[2], float(line[3]),float(line[4]),\
                     float(line[5]),float(line[6]),float(line[7]), int(line[8]),\
-                    float(line[9]),float(line[10]),float(line[11]),line[12]]
+                    float(line[9]),float(line[10]),float(line[11]),float(line[12]),line[13]]
         
         if false_telemetry(filepath,new_line[2:8]):
             raise ValueError

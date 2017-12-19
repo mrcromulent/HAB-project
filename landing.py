@@ -5,7 +5,7 @@ Created on Tue Dec  5 08:59:41 2017
 @author: Pierre
 """
 
-from math import exp, pi, sqrt, sin, cos, asin, radians
+from math import pi, sqrt, sin, cos, asin, radians
 
 g_0 = 9.80665 # m/s^2
 R_star = 8.3144598 #gas constant, m^3 Pa/ K / mol
@@ -22,56 +22,48 @@ C_box = 1.15 #from https://www.engineersedge.com/fluid_flow/rectangular_flat_pla
 #mass parameters of the balloon
 pay_m = 1.2
 bal_m = 1.2
-gas_m = 2.912 #kg, estimated from https://www.webqc.org/ideal_gas_law.html
+gas_m = 0.28 #kg, estimated from https://www.webqc.org/ideal_gas_law.html
 
 n = gas_m / M_helium
 
 descent_m = pay_m + 0.05 * bal_m #DESCENT MASS 
 
-def density_at_alt(alt):
+def density_at_alt(T,P,humidity):
     
-    #altitutde is given in m above mean sea level
-    #from https://en.wikipedia.org/wiki/Barometric_formula
+    #from https://wahiduddin.net/calc/density_altitude.htm
+    #T in K, P in Pa, humidity as a decimal
     
-    if 0 <= alt < 11000:
-        p_b = 1.2250
-        T_b = 288.15
-        L_b = -0.0065
-        h_b = 0
-        
-    elif 11000 <= alt < 20000:
-        p_b = 0.36391
-        T_b = 216.65
-        L_b = 0
-        h_b = 11000
-        
-    elif 20000 <= alt < 32000:
-        p_b = 0.08803
-        T_b = 216.65
-        L_b = 0.001
-        h_b = 20000
-        
-    elif 32000 <= alt < 47000:
-        p_b = 0.01322
-        T_b = 288.65
-        L_b = 0.0028
-        h_b = 32000
-        
-    if L_b != 0:
-        
-        fraction = T_b / (T_b + L_b*(alt - h_b))
-        exponent = 1 + (g_0 * M)/(R_star * L_b)
-        
-        return p_b * (fraction) ** exponent
+    T_c = T - 273.2
     
-    if L_b == 0:
-        exponent = (-g_0 * M * (alt - h_b))/(R_star * T_b)
-        
-        return p_b * exp(exponent)
+    Rd = 287.05
+    
+    eso = 6.1078
+    
+    c0 = 0.99999683
+    c1 = -0.90826951*10 ** (-2)
+    c2 = 0.78736169*10 ** (-4)
+    c3 = -0.61117958*10 ** (-6)
+    c4 = 0.43884187*10 ** (-8)
+    c5 = -0.29883885*10 ** (-10)
+    c6 = 0.21874425*10 ** (-12)
+    c7 = -0.17892321*10 ** (-14)
+    c8 = 0.11112018*10 ** (-16)
+    c9 = -0.30994571*10 ** (-19)
+    
+    p = (c0+T_c*(c1+T_c*(c2+T_c*(c3+T_c*(c4+\
+   T_c*(c5+T_c*(c6+T_c*(c7+T_c*(c8+T_c*c9)))))))))
+    
+    E_s = 100*eso/(p ** 8) #Pa
+    
+    pv = E_s * humidity
+    
+    return (P/(Rd*T))*(1-(0.378*pv)/P)
+    
+    
 
-def drag_at_alt(alt,descent_rate):
+def drag_at_alt(temp,press,humidity,descent_rate):
     
-    rho = density_at_alt(alt)
+    rho = density_at_alt(temp,press,humidity)
     
     return 0.5 * descent_rate ** 2 * rho * (C * parachute_area + C_box * payload_area)
     #return 0.5 * C * descent_rate ** 2 * rho * (parachute_area + payload_area)
@@ -80,7 +72,7 @@ def find_bandchange(windband,v0):
     
     #extract data from the windband
     
-    [alt_lower,alt_upper,dLat_dt,dLong_dt] = windband[:]
+    [alt_lower,alt_upper,dLat_dt,dLong_dt,temp,press,humidity] = windband[:]
     
     bandwidth =  alt_upper - alt_lower
     
@@ -94,7 +86,7 @@ def find_bandchange(windband,v0):
     #...and find the time spent in each using kinematic equations
     
     for i in range (0,1000):
-        a = 1/descent_m * (drag_at_alt(alti,v0) - g_0)
+        a = 1/descent_m * (drag_at_alt(temp,press,humidity,v0) - g_0)
         
         dt = (-v0 - sqrt(v0 ** 2 + 2 * a * band_section))/a
         
@@ -167,13 +159,15 @@ def how_far(prediction,time,lat2 = -34.37435, long2 = 147.859):
     
     return [time,dist] 
 
-def radius_at_alt(alt,T,P):
+def radius_at_alt(T,P):
+    
+    #from the ideal gas law ...
     
     return ((3 * n * R_star * T)/(4 * pi * P)) ** (1/3)
 
-def ac_at_alt(alt,temp,press):
+def ac_at_alt(temp,press):
     
-    balloon_radius = radius_at_alt(alt,temp,press)
+    balloon_radius = radius_at_alt(temp,press)
     area_unburst = payload_area + pi * (balloon_radius) ** 2
     area_burst = payload_area + parachute_area
     
