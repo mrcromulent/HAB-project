@@ -81,10 +81,10 @@ while len(telemetry) < telemetry_cutoff:
             
         ##################################################
         
-#        #if the payload is falling, find the parachute effectiveness
-#        elif (wind_lower_data[3] - alt) >= wind_band_width:
-#            
-#            wind_lower_data = wind.refine_drag_coeff(wind_lower_data,state,winds)
+        #if the payload is falling, find the parachute effectiveness
+        elif (wind_lower_data[3] - alt) >= wind_band_width:
+            
+            wind_lower_data = landing.refine_drag_coeff(wind_lower_data,state,winds)
  
         ##################################################           
         
@@ -104,7 +104,6 @@ while len(telemetry) < telemetry_cutoff:
             
             ##################################################
         
-            #Find some way to transmit prediction?
             
 ###################################################
     
@@ -131,6 +130,6 @@ plt.show()
 a = sorted(calc_times,reverse = True)
 a2 = [i for i in a if i > 0]
 longest_comp = a2[0]
-average_comp = sum(a2)/float(len(a2))
+average_comp = sum(a2)/len(a2)
 
 ###############################################################

@@ -5,7 +5,9 @@ Created on Tue Dec  5 08:59:41 2017
 @author: Pierre
 """
 
-from math import pi, sqrt, sin, cos, asin, radians
+from math import exp, pi, sqrt, sin, cos, asin, radians
+from datetime import datetime
+FMT = '%H:%M:%S' #datetime format
 
 g_0 = 9.80665 # m/s^2
 R_star = 8.3144598 #gas constant, m^3 Pa/ K / mol
@@ -16,7 +18,7 @@ R = 6371 + 0.280 #km. Earth radius + temora altitude
 parachute_area = pi * 0.3048 ** 2 #r = 1 foot in meters
 payload_area = 0.3 * 0.3
 
-C = 1.75 #from https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/rktvrecv.html
+C = 1.5 #from https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/rktvrecv.html
 C_box = 1.15 #from https://www.engineersedge.com/fluid_flow/rectangular_flat_plate_drag_14036.htm
 
 #mass parameters of the balloon
@@ -28,42 +30,94 @@ n = gas_m / M_helium
 
 descent_m = pay_m + 0.05 * bal_m #DESCENT MASS 
 
-def density_at_alt(T,P,humidity):
-    
-    #from https://wahiduddin.net/calc/density_altitude.htm
-    #T in K, P in Pa, humidity as a decimal
-    
-    T_c = T - 273.2
-    
-    Rd = 287.05
-    
-    eso = 6.1078
-    
-    c0 = 0.99999683
-    c1 = -0.90826951*10 ** (-2)
-    c2 = 0.78736169*10 ** (-4)
-    c3 = -0.61117958*10 ** (-6)
-    c4 = 0.43884187*10 ** (-8)
-    c5 = -0.29883885*10 ** (-10)
-    c6 = 0.21874425*10 ** (-12)
-    c7 = -0.17892321*10 ** (-14)
-    c8 = 0.11112018*10 ** (-16)
-    c9 = -0.30994571*10 ** (-19)
-    
-    p = (c0+T_c*(c1+T_c*(c2+T_c*(c3+T_c*(c4+\
-   T_c*(c5+T_c*(c6+T_c*(c7+T_c*(c8+T_c*c9)))))))))
-    
-    E_s = 100*eso/(p ** 8) #Pa
-    
-    pv = E_s * humidity
-    
-    return (P/(Rd*T))*(1-(0.378*pv)/P)
-    
-    
+v0 = 0
 
-def drag_at_alt(temp,press,humidity,descent_rate):
+###########################################################################################
+
+#def density_at_tph(T,P,humidity):
+#    
+#    #from https://wahiduddin.net/calc/density_altitude.htm
+#    #T in K, P in Pa, humidity as a decimal
+#    
+#    T_c = T - 273.2 #Find the temperature in Celsius
+#    Rd = 287.05
+#    eso = 6.1078
+#    
+#    #Define 
+#    
+#    c0 = 0.99999683
+#    c1 = -0.90826951*10 ** (-2)
+#    c2 = 0.78736169*10 ** (-4)
+#    c3 = -0.61117958*10 ** (-6)
+#    c4 = 0.43884187*10 ** (-8)
+#    c5 = -0.29883885*10 ** (-10)
+#    c6 = 0.21874425*10 ** (-12)
+#    c7 = -0.17892321*10 ** (-14)
+#    c8 = 0.11112018*10 ** (-16)
+#    c9 = -0.30994571*10 ** (-19)
+#    
+#    p = (c0+T_c*(c1+T_c*(c2+T_c*(c3+T_c*(c4+\
+#   T_c*(c5+T_c*(c6+T_c*(c7+T_c*(c8+T_c*c9)))))))))
+#    
+#    E_s = 100*eso/(p ** 8) #Pa
+#    
+#    pv = E_s * humidity
+#    
+#    return (P/(Rd*T))*(1-(0.378*pv)/P)
+
+#def drag_at_tph(temp,press,humidity,descent_rate):
+#    
+#    rho = density_at_tph(temp,press,humidity)
+#    
+#    return 0.5 * descent_rate ** 2 * rho * (C * parachute_area + C_box * payload_area)
+#    #return 0.5 * C * descent_rate ** 2 * rho * (parachute_area + payload_area)
+
+#############################################################################################
     
-    rho = density_at_alt(temp,press,humidity)
+def density_at_alt(alt):
+
+    #altitutde is given in m above mean sea level
+    #from https://en.wikipedia.org/wiki/Barometric_formula
+    
+    if 0 <= alt < 11000:
+        p_b = 1.2250
+        T_b = 288.15
+        L_b = -0.0065
+        h_b = 0
+        
+    elif 11000 <= alt < 20000:
+        p_b = 0.36391
+        T_b = 216.65
+        L_b = 0
+        h_b = 11000
+        
+    elif 20000 <= alt < 32000:
+        p_b = 0.08803
+        T_b = 216.65
+        L_b = 0.001
+        h_b = 20000
+        
+    elif 32000 <= alt < 47000:
+        p_b = 0.01322
+        T_b = 288.65
+        L_b = 0.0028
+        h_b = 32000
+        
+    if L_b != 0:
+        
+        fraction = T_b / (T_b + L_b*(alt - h_b))
+        exponent = 1 + (g_0 * M)/(R_star * L_b)
+        
+        return p_b * (fraction) ** exponent
+    
+    if L_b == 0:
+        exponent = (-g_0 * M * (alt - h_b))/(R_star * T_b)
+        
+        return p_b * exp(exponent)    
+
+def drag_at_alt(alt,descent_rate):
+    
+    rho = density_at_alt(alt)
     
     return 0.5 * descent_rate ** 2 * rho * (C * parachute_area + C_box * payload_area)
     #return 0.5 * C * descent_rate ** 2 * rho * (parachute_area + payload_area)
@@ -86,7 +140,14 @@ def find_bandchange(windband,v0):
     #...and find the time spent in each using kinematic equations
     
     for i in range (0,1000):
-        a = 1/descent_m * (drag_at_alt(temp,press,humidity,v0) - g_0)
+        
+        ######################################################
+        
+#        a = 1/descent_m * (drag_at_tph(temp,press,humidity,v0) - g_0)
+        
+        ######################################################
+
+        a = 1/descent_m * (drag_at_alt(alti,v0) - g_0)
         
         dt = (-v0 - sqrt(v0 ** 2 + 2 * a * band_section))/a
         
@@ -159,16 +220,49 @@ def how_far(prediction,time,lat2 = -34.37435, long2 = 147.859):
     
     return [time,dist] 
 
-def radius_at_alt(T,P):
+def radius_at_tp(T,P):
     
     #from the ideal gas law ...
     
     return ((3 * n * R_star * T)/(4 * pi * P)) ** (1/3)
 
-def ac_at_alt(temp,press):
+def ac_at_tp(temp,press):
     
-    balloon_radius = radius_at_alt(temp,press)
+    balloon_radius = radius_at_tp(temp,press)
     area_unburst = payload_area + pi * (balloon_radius) ** 2
     area_burst = payload_area + parachute_area
     
     return area_burst/area_unburst
+
+def refine_drag_coeff(wind_lower_data,state,winds):
+    
+    #Use formula to refine C_d http://www.rocketmime.com/rockets/descent.html
+    
+    global v0
+    global C
+    
+    at = datetime.strptime(state[0], FMT) - datetime.strptime(wind_lower_data[0], FMT)
+    actual_time = at.total_seconds()
+    
+    ind = how_many_bands(winds,state[3])
+    
+    [estimated_time,_,_,_,v0] = find_bandchange(winds[ind + 1],v0)
+    
+    wind_lower_data = state[:]
+    
+    alt = state[3]
+    rho = density_at_alt(alt)
+    D = 2 * 0.3048
+    
+    #C_new = C * (actual_time/estimated_time)
+    
+    C_new = 8 * descent_m * g_0 / (pi * rho * v0 ** 2 * D ** 2)
+    
+    
+    if not(C_new > 100 or C_new < 0.5):
+        C = C_new
+        
+    print(wind_lower_data[3],C,C_new,rho,v0)
+    
+    return wind_lower_data
+    
