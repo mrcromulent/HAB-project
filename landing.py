@@ -9,82 +9,96 @@ from math import exp, pi, sqrt, sin, cos, asin, radians
 from datetime import datetime
 FMT = '%H:%M:%S' #datetime format
 
-g_0 = 9.80665 # m/s^2
-R_star = 8.3144598 #gas constant, m^3 Pa/ K / mol
-M = 0.0289644 #molar mass of air
-M_helium = 0.004 #kg/mol
-R = 6371 + 0.280 #km. Earth radius + temora altitude
+##PHYSICAL CONSTANTS
+
+g = 9.80665 # m/s^2
+R = 8.3144598 #gas constant, m^3 Pa/ K / mol
+M_air = 0.0289644 #molar mass of air, kg/mol
+M_helium = 0.004 #molar mass of helium, kg/mol
+earth_radius = 6371 + 0.280 #km. Earth radius + temora altitude
+
+##PAYLOAD DIMENSIONS AND MASS
  
-parachute_area = pi * 0.6096 ** 2 #0.3048 ** 2  #r = 2 feet in meters
-payload_area = 0.3 * 0.3
+parachute_radius = 0.6096 #2 feet in meters
+parachute_area = pi * parachute_radius ** 2  
+payload_area = 0.3 * 0.3 #m^2
+area_burst = parachute_area + payload_area
+
+pay_m = 1.2 #kg
+bal_m = 1.2 #kg
+gas_m = 0.28 #kg, estimated from ideal gas law and YERRALOON1 launh footage
+
+n = gas_m / M_helium #mols of Helium gas
+descent_m = pay_m + 0.05 * bal_m #Descent mass, kg
+
+##DRAG COEFFICIENTS
 
 C = 1.75 #from https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/rktvrecv.html
 C_box = 1.15 #from https://www.engineersedge.com/fluid_flow/rectangular_flat_plate_drag_14036.htm
 
-#mass parameters of the balloon
-pay_m = 1.2
-bal_m = 1.2
-gas_m = 0.28 #kg, estimated from https://www.webqc.org/ideal_gas_law.html
-
-n = gas_m / M_helium
-
-descent_m = pay_m + 0.05 * bal_m #DESCENT MASS 
-
+#global variable to track descent velocity
 v0_global = 0
+
     
 def density_at_alt(alt):
-
-    #altitutde is given in m above mean sea level
-    #from https://en.wikipedia.org/wiki/Barometric_formula
+    """"Returns air density in kg/m^3 as a function of altitude above mean 
+    sea level (given in m). Density computed using Barometric Formula, 
+    available at https://en.wikipedia.org/wiki/Barometric_formula"""
     
-    if 0 <= alt < 11000:
+    if 0 <= alt < 11000: #Troposphere
         p_b = 1.2250
         T_b = 288.15
         L_b = -0.0065
         h_b = 0
         
-    elif 11000 <= alt < 20000:
+    elif 11000 <= alt < 20000: #Stratosphere1
         p_b = 0.36391
         T_b = 216.65
         L_b = 0
         h_b = 11000
         
-    elif 20000 <= alt < 32000:
+    elif 20000 <= alt < 32000: #Stratosphere2
         p_b = 0.08803
         T_b = 216.65
         L_b = 0.001
         h_b = 20000
         
-    elif 32000 <= alt < 47000:
+    elif 32000 <= alt < 47000: #Stratosphere3
         p_b = 0.01322
         T_b = 288.65
         L_b = 0.0028
         h_b = 32000
         
+    #Apply the correct formula based on the value of the Lapse Rate, L_b
+        
     if L_b != 0:
         
         fraction = T_b / (T_b + L_b*(alt - h_b))
-        exponent = 1 + (g_0 * M)/(R_star * L_b)
+        exponent = 1 + (g * M_air)/(R * L_b)
         
         return p_b * (fraction) ** exponent
     
     if L_b == 0:
-        exponent = (-g_0 * M * (alt - h_b))/(R_star * T_b)
+        exponent = (-g * M_air * (alt - h_b))/(R * T_b)
         
         return p_b * exp(exponent)    
 
 def drag_at_alt(alt,descent_rate):
+    """drag_at_alt applies the drag formula: 
+        F_drag = 1/2 * Coefficient_drag * density * velocity^2 * Area"""
     
     rho = density_at_alt(alt)
     
     return 0.5 * descent_rate ** 2 * rho * (C * parachute_area + C_box * payload_area)
-    #return 0.5 * C * descent_rate ** 2 * rho * (parachute_area + payload_area)
 
 def find_bandchange(windband,v0):
+    """find_bandchange finds the change in latitude, longitude and altitude
+    and velocity of the falling payload over a single windband by 
+    iterating through kinematic equations on 1000 band_sections."""
     
     #extract data from the windband
     
-    [alt_lower,alt_upper,dLat_dt,dLong_dt,temp,press,humidity] = windband[:]
+    [alt_lower,alt_upper,dLat_dt,dLong_dt,_,_,_] = windband[:]
     
     bandwidth =  alt_upper - alt_lower
     
@@ -92,25 +106,21 @@ def find_bandchange(windband,v0):
     
     band_section = -0.001 * bandwidth
     
+    #Initialise variables to track altitude and time spent
+    
     sum_t = 0
     alti = alt_upper
     
-    #...and find the time spent in each using kinematic equations
-    
     for i in range (0,1000):
         
-        ######################################################
-        
-#        a = 1/descent_m * (drag_at_tph(temp,press,humidity,v0) - g_0)
-        
-        ######################################################
+        #Apply the kinematic equations
 
-        a = 1/descent_m * (drag_at_alt(alti,v0) - g_0)
-        
+        a = 1/descent_m * (drag_at_alt(alti,v0) - g)
         dt = (-v0 - sqrt(v0 ** 2 + 2 * a * band_section))/a
         
-        sum_t += dt
+        #iterate up the time sum, altitude and velocity        
         
+        sum_t += dt
         alti += band_section
         v0 = v0 + a * dt
     
@@ -123,6 +133,8 @@ def find_bandchange(windband,v0):
     return [sum_t,delta_lat,delta_long,alt_lower,v0]
 
 def how_many_bands(winds,alt):
+    """Uses a loop to return the index of the first windband entirely 
+    above alt. If none exist, the last index is returned."""
     for i in range(0,len(winds)):
         if winds[i][1] > alt:
             return i
@@ -130,25 +142,32 @@ def how_many_bands(winds,alt):
     return len(winds)
 
 def splat(state,winds):
+    """Predicts the landing site by identifying the current altitude 
+    (from state) and applying the find_bandchange() function iteratively
+    to all lower windbands. The results of find_bandchange() are added to
+    the current latitude and longitude and these new values are fed back
+    into find_bandchange(). splat() also writes the prediction to the 
+    output .txt file."""
     
     #extract the relevant quantities from the arguments
     
     [time,lat,long,alt,speed,heading] = state[0:6]
     
-    ###########################################
+    #Override the speed from the Raspberri Pi with our best 
+    #speed estimate from the descent data
     
-    if v0_global > 0 and abs(speed - v0_global) > 1:
-        speed = v0_global
+    check_speed(speed)
     
-    ###########################################
-    
-    #find the number of bands below the payload
+    #find the number of bands below the payload, at alt
     
     num_bands = how_many_bands(winds,alt)
     
-    #call find_bandchange on each band and sum the results
+    #call find_bandchange on each band (starting with the highest band) and 
+    #finishing at the lowest.
     
     for i in range(num_bands-1,-1,-1):
+        
+        #Iterate through find_bandchange
         
         [_,delta_lat,delta_long,new_alt,new_speed] = find_bandchange(winds[i],speed)
         
@@ -165,13 +184,18 @@ def splat(state,winds):
             
 
 def how_far(prediction,time,lat2 = -34.37435, long2 = 147.859):
+    """how_far() returns the distance (in km) between any two points of 
+    latitude and longitude using the Haversine Formula (see 
+    https://www.movable-type.co.uk/scripts/latlong.html). The function
+    expects prediction as a list of the form [lat,long] and time as a
+    string. lat2 and long2 have default values as the actual landing
+    coordinates of the YERRALOON1."""
     
-    #this function finds the distance between any two points of latitude and longitude
-    #default arguments are for YERRALOON1's landing site.
-    
-    #Forumula from https://www.movable-type.co.uk/scripts/latlong.html
+    #Extract the latitude and longitude from prediction 
     
     [lat1,long1] = prediction[:]
+    
+    #Convert to radians
     
     del_lat = radians(lat1 - lat2)
     del_long = radians(long1 - long2)
@@ -179,44 +203,61 @@ def how_far(prediction,time,lat2 = -34.37435, long2 = 147.859):
     lat1 = radians(lat1)
     lat2 = radians(lat2)
     
+    #Apply the Haversine Formula
+    
     a = sin(del_lat/2)**2 + cos(lat1)*cos(lat2)*sin(del_long/2)**2
     c = 2*asin(sqrt(a))
-    dist = R*c
+    dist = earth_radius*c
     
     return [time,dist] 
 
-def radius_at_tp(T,P):
+def radius_at_tp(T,P):  
+    """Finds the radius of the balloon as a function of the external 
+    temperature and pressure, T and P using the Ideal Gas Law: 
+        PV = nRT. T is expected in Kelvin and P in Pascals."""
     
     #from the ideal gas law ...
     
-    return ((3 * n * R_star * T)/(4 * pi * P)) ** (1/3)
+    return ((3 * n * R * T)/(4 * pi * P)) ** (1/3)
 
 def ac_at_tp(temp,press):
+    """ac_at_alt() finds the 'area correction' (defined as the ratio of
+    the balloon-payload system after and before bursting) as a function
+    of the external temperature and pressure. Temperature is expected 
+    in Kelvin and Pressure in Pascal."""
     
     balloon_radius = radius_at_tp(temp,press)
+    
     area_unburst = payload_area + pi * (balloon_radius) ** 2
-    area_burst = payload_area + parachute_area
     
     return area_burst/area_unburst
 
-def refine_drag_coeff(wind_lower_data,state,winds):
-    
+def refine_drag_calculation(wind_lower_data,state,winds):
+    """This function refines the value of v0_global (the global variable
+    tracking payload descent velocity) using the distance and time values
+    of the payload in the previous windband."""
     
     global v0_global
+    
+    #find the distance and time taken
     
     at = datetime.strptime(state[0], FMT) - datetime.strptime(wind_lower_data[0], FMT)
     actual_time = at.total_seconds()
     dist = state[3] - wind_lower_data[3]
     
-    ind = how_many_bands(winds,state[3])
+    #update v0_global
     
-    [estimated_time,_,_,_,v0_global] = find_bandchange(winds[ind + 1],v0_global)
+    v0_global = dist/actual_time
     
-    
-    if abs(actual_time - estimated_time) > 1:
-        v0_global = dist/actual_time
+    #reset wind_lower_data
                 
     wind_lower_data = state[:]
     
     return wind_lower_data
     
+def check_speed(speed):
+    """This function checks the value of speed to ensure it is consistent 
+    with the best current estimate of payload descent velocity, v0_global."""
+    
+    if v0_global > 0 and abs(speed - v0_global) > 1:
+        speed = v0_global
