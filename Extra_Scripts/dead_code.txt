@@ -145,3 +145,57 @@ def temp_press_at_alt(alt):
         
         return [T_b,P]
 
+
+###########################################################################################
+
+#def density_at_tph(T,P,humidity):
+#    
+#    #from https://wahiduddin.net/calc/density_altitude.htm
+#    #T in K, P in Pa, humidity as a decimal
+#    
+#    T_c = T - 273.2 #Find the temperature in Celsius
+#    Rd = 287.05
+#    eso = 6.1078
+#    
+#    #Define 
+#    
+#    c0 = 0.99999683
+#    c1 = -0.90826951*10 ** (-2)
+#    c2 = 0.78736169*10 ** (-4)
+#    c3 = -0.61117958*10 ** (-6)
+#    c4 = 0.43884187*10 ** (-8)
+#    c5 = -0.29883885*10 ** (-10)
+#    c6 = 0.21874425*10 ** (-12)
+#    c7 = -0.17892321*10 ** (-14)
+#    c8 = 0.11112018*10 ** (-16)
+#    c9 = -0.30994571*10 ** (-19)
+#    
+#    p = (c0+T_c*(c1+T_c*(c2+T_c*(c3+T_c*(c4+\
+#   T_c*(c5+T_c*(c6+T_c*(c7+T_c*(c8+T_c*c9)))))))))
+#    
+#    E_s = 100*eso/(p ** 8) #Pa
+#    
+#    pv = E_s * humidity
+#    
+#    return (P/(Rd*T))*(1-(0.378*pv)/P)
+
+#def drag_at_tph(temp,press,humidity,descent_rate):
+#    
+#    rho = density_at_tph(temp,press,humidity)
+#    
+#    return 0.5 * descent_rate ** 2 * rho * (C * parachute_area + C_box * payload_area)
+#    #return 0.5 * C * descent_rate ** 2 * rho * (parachute_area + payload_area)
+
+#############################################################################################
+
+        alt = state[3]
+        
+        rho = density_at_alt(alt)
+        
+        C = 1/(rho * v0_global ** 2 * parachute_area) * \
+        (4 * (-100 - v0_global * actual_time)/(actual_time ** 2) + 2 * g_0)
+#    else:
+#        C_new = C * (actual_time/estimated_time)
+#        
+#        if not(C_new > 2 or C_new < 1):
+#            C = C_new

@@ -15,10 +15,10 @@ M = 0.0289644 #molar mass of air
 M_helium = 0.004 #kg/mol
 R = 6371 + 0.280 #km. Earth radius + temora altitude
  
-parachute_area = pi * 0.3048 ** 2 #r = 1 foot in meters
+parachute_area = pi * 0.6096 ** 2 #0.3048 ** 2  #r = 2 feet in meters
 payload_area = 0.3 * 0.3
 
-C = 1.5 #from https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/rktvrecv.html
+C = 1.75 #from https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/rktvrecv.html
 C_box = 1.15 #from https://www.engineersedge.com/fluid_flow/rectangular_flat_plate_drag_14036.htm
 
 #mass parameters of the balloon
@@ -30,49 +30,7 @@ n = gas_m / M_helium
 
 descent_m = pay_m + 0.05 * bal_m #DESCENT MASS 
 
-v0 = 0
-
-###########################################################################################
-
-#def density_at_tph(T,P,humidity):
-#    
-#    #from https://wahiduddin.net/calc/density_altitude.htm
-#    #T in K, P in Pa, humidity as a decimal
-#    
-#    T_c = T - 273.2 #Find the temperature in Celsius
-#    Rd = 287.05
-#    eso = 6.1078
-#    
-#    #Define 
-#    
-#    c0 = 0.99999683
-#    c1 = -0.90826951*10 ** (-2)
-#    c2 = 0.78736169*10 ** (-4)
-#    c3 = -0.61117958*10 ** (-6)
-#    c4 = 0.43884187*10 ** (-8)
-#    c5 = -0.29883885*10 ** (-10)
-#    c6 = 0.21874425*10 ** (-12)
-#    c7 = -0.17892321*10 ** (-14)
-#    c8 = 0.11112018*10 ** (-16)
-#    c9 = -0.30994571*10 ** (-19)
-#    
-#    p = (c0+T_c*(c1+T_c*(c2+T_c*(c3+T_c*(c4+\
-#   T_c*(c5+T_c*(c6+T_c*(c7+T_c*(c8+T_c*c9)))))))))
-#    
-#    E_s = 100*eso/(p ** 8) #Pa
-#    
-#    pv = E_s * humidity
-#    
-#    return (P/(Rd*T))*(1-(0.378*pv)/P)
-
-#def drag_at_tph(temp,press,humidity,descent_rate):
-#    
-#    rho = density_at_tph(temp,press,humidity)
-#    
-#    return 0.5 * descent_rate ** 2 * rho * (C * parachute_area + C_box * payload_area)
-#    #return 0.5 * C * descent_rate ** 2 * rho * (parachute_area + payload_area)
-
-#############################################################################################
+v0_global = 0
     
 def density_at_alt(alt):
 
@@ -177,6 +135,13 @@ def splat(state,winds):
     
     [time,lat,long,alt,speed,heading] = state[0:6]
     
+    ###########################################
+    
+    if v0_global > 0 and abs(speed - v0_global) > 1:
+        speed = v0_global
+    
+    ###########################################
+    
     #find the number of bands below the payload
     
     num_bands = how_many_bands(winds,alt)
@@ -236,33 +201,22 @@ def ac_at_tp(temp,press):
 
 def refine_drag_coeff(wind_lower_data,state,winds):
     
-    #Use formula to refine C_d http://www.rocketmime.com/rockets/descent.html
     
-    global v0
-    global C
+    global v0_global
     
     at = datetime.strptime(state[0], FMT) - datetime.strptime(wind_lower_data[0], FMT)
     actual_time = at.total_seconds()
+    dist = state[3] - wind_lower_data[3]
     
     ind = how_many_bands(winds,state[3])
     
-    [estimated_time,_,_,_,v0] = find_bandchange(winds[ind + 1],v0)
+    [estimated_time,_,_,_,v0_global] = find_bandchange(winds[ind + 1],v0_global)
     
+    
+    if abs(actual_time - estimated_time) > 1:
+        v0_global = dist/actual_time
+                
     wind_lower_data = state[:]
-    
-    alt = state[3]
-    rho = density_at_alt(alt)
-    D = 2 * 0.3048
-    
-    #C_new = C * (actual_time/estimated_time)
-    
-    C_new = 8 * descent_m * g_0 / (pi * rho * v0 ** 2 * D ** 2)
-    
-    
-    if not(C_new > 100 or C_new < 0.5):
-        C = C_new
-        
-    print(wind_lower_data[3],C,C_new,rho,v0)
     
     return wind_lower_data
     

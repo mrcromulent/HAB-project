@@ -85,7 +85,7 @@ while len(telemetry) < telemetry_cutoff:
         elif (wind_lower_data[3] - alt) >= wind_band_width:
             
             wind_lower_data = landing.refine_drag_coeff(wind_lower_data,state,winds)
- 
+
         ##################################################           
         
             
