@@ -1,23 +1,24 @@
 \documentclass[11pt]{article}
 
-\usepackage{titling}
+\usepackage{titling,array,multicol,placeins}
 \usepackage[margin=1.25in]{geometry}
 \usepackage{graphicx,amsmath,hyperref}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{fancyhdr}
 
+\newcommand{\vers}{0.2}
+
 \pagestyle{fancy}
 \fancyhf{}
-\rhead{ANU AITC}
-\lhead{HAB Landing Site Project - AITC INTERN REPORT}
+\rhead{HAB-LPR-SRD-0003-HAB\_project\_report\_v\vers}
+\lhead{AITC INTERN REPORT}
 \rfoot{Page \thepage}
 
-\title{A Landing Site Prediction System for High Altitude Balloons (HAB's) \large \\
-	AITC Summer Internship \\
-  	Supervisor: Dr James Gilbert}
+\title{A Landing Site Prediction System for High-Altitude Balloons \large} 
 \author{Uri Pierre Burmester}
 \date{\today}
+
 
 \begin{document}
 
@@ -27,56 +28,105 @@
 
 \maketitle
 
-\newpage
-
-\tableofcontents
+\centerline{AITC Summer Internship}  
+\centerline{Supervisor: Dr. James Gilbert} 
 
 \newpage
 
 \section{Notices}
 
-Australian National University
-Advanced Instrumentation 
-and Technology Centre
+\begin{table}[!h] \centering 
+ \begin{tabular}{|c|} 
+ \hline
 
-Mount Stromlo Road
-Mount Stromlo ACT 2602
+Australian National University \\ 
+Advanced Instrumentation and Technology Centre \\
 
-Tel: 	02 6125 0230
-Fax:	02 6125 0233
+ \\
 
-Proprietary Notice
-This document contains information owned by, and sensitive to, the Advanced Instrumentation and Technology Centre (AITC).
-This document may be used by the recipient only for a purpose authorised by the AITC. 
-This document is not to be extracted, modified or communicated to any third party, including external consultants, except with the written permission of the AITC.
-Do not remove this notice.
+Mount Stromlo Road \\ 
+Mount Stromlo ACT 2602 \\
 
-Copyright Notice
-This material has been copied and communicated to you by or on behalf of the AITC pursuant to Part VB of the Copyright Act 1968 (‘the Act’).
-The material in this communication may be subject to copyright under the Act. Any further reproduction or communication of this material to you may be the subject of copyright protection under the Act.
-Do not remove this notice.
+ \\
+
+Tel: 	02 6125 0230 \\
+Fax:	02 6125 0233 \\
+
+   \hline
+   \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering 
+ \begin{tabular}{|c|} 
+ \hline
+
+Proprietary Notice: \\
+This document contains information owned by, and \\ 
+sensitive to, the Advanced Instrumentation and \\
+Technology Centre (AITC). \\ 
+ \\
+This document may be used by the recipient only for \\ 
+a purpose authorised by the AITC. \\ 
+ \\
+This document is not to be extracted, modified or \\
+communicated to any third party, including external \\
+consultants, except with the written permission of the \\
+AITC. \\
+ \\ 
+ 
+Do not remove this notice. \\
+   \hline
+   \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering 
+ \begin{tabular}{|c|} 
+ \hline
+
+Copyright Notice: \\
+This material has been copied and communicated to you \\ 
+by or on behalf of the AITC pursuant to Part VB of the \\ 
+Copyright Act 1968 (‘the Act’). \\
+  \\
+The material in this communication may be subject to \\
+copyright under the Act. Any further reproduction or \\
+communication of this material to you may be the subject \\ 
+of copyright protection under the Act. \\
+ \\
+Do not remove this notice. \\
+   \hline
+   \end{tabular}
+\end{table}
 
 \newpage
 
-APPROVAL FOR RELEASE
-This report is hereby approved for release by the following parties on behalf the AITC:
-<Date>
+\bigskip
+\section{Approval for Release}
+This report is hereby approved for release by the following parties on behalf the AITC: \\
 
+\bigskip
+\bigskip
 
-<Name>
-<Position>
+\begin{center}
+Dr. James Gilbert \\
+\today \\
+Project Engineer (MEng, MIET) \\
 Advanced Instrumentation and Technology Centre
+\end{center}
+
 
 \newpage
-
 \section{Amendment Log}
 
-\begin{table} 
- \begin{tabular}{||c c c c||} 
+\begin{table}[!h] \centering
+ \begin{tabular}{|c c c c|} 
  \hline
  Version & Date & Author & Change \\ [0.5ex] 
- \hline\hline
- 0.1 & 23 Nov 2017 & UPB & Started Report
+ \hline
+ 0.1 & 23 Nov 2017 & UPB & Started Report \\
+ \hline
+  0.2 & 2 Jan 2018 & UPB & Improved formatting and started writing \\
+ \hline
 \end{tabular}
 \end{table}
 
@@ -86,6 +136,8 @@ Advanced Instrumentation and Technology Centre
 
 \newpage
 
+\tableofcontents
+
 \listoffigures
 
 \listoftables
@@ -94,64 +146,278 @@ Advanced Instrumentation and Technology Centre
 
 \section{Introduction}
 
+High-altitude balloons (HABs) are unmanned, near-space balloons which are released from the Earth's surface. They rise (typically to the strastosphere), before bursting and falling back down to the ground, sometimes hundreds of kilometers from their launch site. HABs are often constructed for the purposes of gathering scientific data (such as temperature, pressure and wind speed) or just to take photographs from a high altitude. However, variations in flight characteristics like weather conditions, balloon design and obstacles can render a HAB's landing site unpredictable. This in turn makes the process of retrieving the balloon and accessing its data difficult. \\
+
+The Advanced Instrumentation Technology Centre (AITC) has already participated in HAB launches in the past, including in December 2017. The balloon payload carried a Raspberry Pi microprocessor running freeware published online by Dave Ackerman [], allowing the payload to gather data about its current and historical GPS coordinates and altitude. The purpose of this project is to develop software to predict the HAB landing site using these data and allow the prediction to be transmitted to a computer on the ground.
+
 \subsection{Document Purpose}
 
-\subsection{Document Scope}
+This document contains an outline of the work currently completed on the HAB Landing Site Prediction (HAB-LPR) project as completed by the author during the 2017-18 Summer Research Internship (i.e. a Summer Research Scholarship specifically for students of the ANU). The internship was completed under the supervision of the AITC, of which the project supervisor, Dr. James Gilbert, is an employee. \\
+
+The purpose of this document is to:
+\begin{itemize}
+\item Document the ongoing progress of the HAB-LPR project, including issues
+\item Explain and justify the research, development and management process undertaken by the author
+\item Establish the current state of the project at the completion of the internship
+\item Identify areas for potential future work, with the aim of allowing others to continue the project
+\end{itemize}
+
+%\subsection{Document Scope}
 
 \subsection{Intended Audience}
+The report is written with the intention of being used by: 
+\begin{itemize}
+\item ANU/AITC staff, in understanding the work that was conducted over the course of the internship
+\item future Summer Scholars/Interns, such that they can continue to develop the HAB-LPR project
+\item AITC's corporate partners, in particular Northrup Grumman, whose generous support provides funding for the work of the Summer Research Scholars/Interns
+\end{itemize}
 
 \subsection{Applicable Documents}
+Other documents exist in the corpus of documents for this project. In particular, HAB-LPR-SRD-0001\_Landing\_prediction\_system\_requirements\_v1.1 establishes scope and engineering requirements for the project, as defined by Dr. Gilbert. A draft project plan was written in late November 2017 in response to these requirements establishing project milestones and an initial project timetable. These can be found in: HAB-LPR-SRD-0002-HAB\_project\_plan\_v1.1 .
+
 
 \subsection{Acronyms and Abbreviations}
 
+\begin{itemize}
+\item AITC - Advanced Instrumentation and Technology Centre - Host of the Summer Research Internship and workplace of the Project Supervisor (Dr. James Gilbert)
+\item ANU - Australian National University - Parent University of the AITC
+\item HAB - High-Altitude Balloon - A large balloon which which rises, typically to the stratosphere for the purposes of carrying scientific equipment such as radio transmitters, temperature and pressure sensors
+\item HAB-LPR - High-Altitude Balloon Landing Prediction - Project Code used for keeping track of documents and project requirements, etc.
+\end{itemize}
+
 \subsection{Definitions}
+
+\begin{itemize}
+\item Tracker - 
+\item Transmitter -
+\item Payload -
+\item Windband ???
+\end{itemize}
+
 
 \section{Project Definition}
 
 \subsection{Background}
 
+-explain how our launch worked (parachute and retrieval)
+-explain Ackerman PITS software running on the Pi
+
 \subsection{Objective}
+-to improve on the ackerman prediction
 
 \subsection{Scope}
 
-\subsection{Approach}
+Existing landing prediction software runs on the balloon's main flight computer. The main process running on this computer is the tracker, which handles GPS reception, telemetry, and radio communications with the ground. Though the landing prediction system is separate to the tracker, it does interface with it - GPS data is an input, and a periodic prediction of the payload landing site is an output. Tracker-related tasks, such as driving GPS hardware or handling radio communications, are not within the scope of this project.
 
-\section{Stakeholders}
+%\subsection{Approach}
+
+%\section{Stakeholders}
+
+\subsection{Project Requirements}
+
+The system requirements (as reproduced from HAB-LPR-SRD-0001) are listed below. These were derived in consultation with Dr. Gilbert.
+
+\FloatBarrier
+
+\begin{table}[!htbp] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R01 – Purpose and inputs} \\
+  \hline
+  Requirement & The landing site prediction system shall estimate the landing site of the payload based only on recent and historical GPS coordinates and altitudes. \\
+  \hline
+  Rationale & A log of GPS data is the primary source of information from the balloon payload.  \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R02 – System host} \\
+  \hline
+  Requirement & The landing site prediction system shall run on the same computer as the tracking system.  This computer will be a Raspberry Pi Zero or Raspberry Pi A+.  \\
+  \hline
+  Rationale & Ease of data I/O and reduction of payload mass (existing computer, power supply etc.)  \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R03 – Start on boot} \\
+  \hline
+  Requirement & The landing site prediction system shall be capable of starting when the flight computer is booted, without external input from other systems or users.  \\
+  \hline
+  Rationale & Simplicity upon launch; the computer will not have user interfaces, and reliance on other systems or people increases the chance of error before balloon release.  \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R04 – Input format} \\
+  \hline
+  Requirement & The landing site prediction system shall obtain input data from a text file at a customisable path on the flight computer. The data format is comma-separated values (CSV), using ASCII characters and terminated by a newline character. There may be up to twenty fields per line. The column numbers of the input fields (latitude, longitude, altitude) shall be customisable in the code. Numbers may be zero-padded. An example string is: $ \$ \$YERRA,698,00:23:30,-35.32110,149.00710,00747,11,16,9,50.7,31.2,932,31.1*16A8$ \\
+  \hline
+  Rationale & An industry standard method of storing data that is compatible with the existing tracker software.   \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R05 – Units} \\
+  \hline
+  Requirement & All input and output units shall be in decimal degrees ($\pm $90 lat, $\pm$ 180 lon) for coordinates, and metres for altitudes.  \\
+  \hline
+  Rationale & Consistency with existing tracker software. \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R06 – Output format} \\
+  \hline
+  Requirement & The landing site prediction system shall write output data to a text file at a customisable path on the flight computer. The data format shall be comma-separated values (CSV), using ASCII characters and terminated by a newline character. The column order shall be customisable in the code. The values shall be numbers only. \\
+  \hline
+  Rationale & An industry standard method of storing data that is compatible with the existing tracker software.  \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R07 – Logging} \\
+  \hline
+  Requirement & The landing site prediction system shall write all prediction outputs to a log in the form of an ASCII text file. All logs shall include a UNIX timestamp (nearest second or better), and any other relevant parameters, such as the latest input data.  \\
+  \hline
+  Rationale & A historical record of the system’s output will be useful for improving the system.   \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R08 – Internet connection} \\
+  \hline
+  Requirement & The landing site prediction system shall not require an internet connection to operate. \\
+  \hline
+  Rationale & A driving requirement of this system is that it functions without an internet connection.  \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R09 – Valid prediction timings} \\
+  \hline
+  Requirement & The landing site prediction system shall begin outputting valid prediction data within one minute after balloon burst (payload decent), or earlier. Prediction during ascent (assuming imminent burst) is desirable but optional. \\
+  \hline
+  Rationale & Balloon burst is the point at which all ascent data should exist and landing site prediction becomes particularly important.   \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R10 – Prediction update interval} \\
+  \hline
+  Requirement & The landing site prediction system shall output a new prediction at intervals of two minutes or less, from when the first prediction is made. \\
+  \hline
+  Rationale & Refining predictions based on the latest data should increase prediction accuracy, and frequent updates will benefit ground logistics to approach the predicted landing site.  \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\begin{table}[!h] \centering
+ \begin{tabular}{|p{2cm} p{11cm}|}
+ \hline
+  \multicolumn{2}{|l|}{HAB-LPR-R11 – Error handling} \\
+  \hline
+  Requirement & The landing site prediction system shall at no point jeopardise the continued operation of the flight computer and tracker system. All errors shall be handled in a way that, at worst, stops operation of the prediction software only. The system shall be fail-safe.  \\
+  \hline
+  Rationale & Affecting the tracker system could lead to a loss of communications and a lost flight.  \\
+  \hline
+ \end{tabular}
+\end{table}
+
+\FloatBarrier
 
 \section{Deliverables and Outcomes}
+Upon completion of the project, deliverables include:
+
+1 x suite of software to predict landing site, capable of running on Raspberry Pi Zero or Raspberry Pi A+ \\
+1 x presentation of progress to stakeholders (delivered: 12/01/2018) \\
+1 x Final report (this document, HAB-LPR-SRD-0003)\\
 
 \section{Project Management}
 
-\subsection{Project Organisation}
+%\subsection{Project Organisation}
 
-\subsection{Work Break Down Structure}
+%\subsection{Work Break Down Structure}
 
 \subsection{Schedule}
 
-\subsection{Risk and Issue Management}
+%\subsection{Risk and Issue Management}
 
 \section{Literature Review}
 
 \subsection{Current Best Practice}
 
+Three well-known suites of software are currently available which are produce HAB landing site predictions, the Cambridge University Space Flight (CUSF) predictor, the ASTRA High Altitude Balloon Flight planner (property of the University of Southampton) and the Pi-In-The-Sky tracker software, created by Dave Ackerman. \\
+
+The CUSF predictor is widely considered to be the most definitive prediction software and is the driving force behind the predictions produced by habhub.org, which allows for live, online tracking of balloons whose telemetry is being received from the ground. -burst radius, ascent rate, descent rate, relies on API data from the United States' National Oceaninc and Atmospheric Administration (NOAA) to estimate windspeed affecting the payload on its ascent and descent. \\
+
+The ASTRA Flight Planner is a good secondary prediction source after the CUSF predictor. Though the full suite of software is not available online, the University of Southampton has published a scientific paper documenting the sources underlying the prediction software Sobester,2013 []\\
+
+The Ackerman Predictor is part of the existing tracker software. This predictor stores a telemetry file in memory containing data including: time, latitude, longitude, altitude, temperature, pressure and humidity (See HAB-LPR-R04). The Ackerman predictor angular speed (degrees latitude / second and degrees longitude / second)  \\
+
 \subsection{Gap Analysis}
+
+There are some obvious limitations to these existing approaches. Both the CUSF and ASTRA predictions require internet access, which can often be unreliable in the rural areas where balloon launches take place. The CUSF and ASTRA predictors also lack the most recent weather data - weather conditions can change drastically in an hour, which means that the wind data provided by the NOAA to support the prediction could be out-of-date by virtue of when the last prediction was made or how frequently the NOAA API offers updated wind data. This lack of reliable wind data is a fault shared by the Ackerman predictor - whereas this software relies on measuring the change of angular speed to determine the 'windspeed' in a windband, this does not take into account that the payload might travel hundreds of kilometers horizontally between its ascent and descent. There is no reason to expect the windspeed 1000 meters above Sydney is the same as that at an equivalent altitude above Canberra. \\
+
+Ackerman's prediction software also provides no correction for the differences in area of the balloon-payload system on its ascent and descent - the effect of the wind should be larger on a larger system, and the area of the balloon will grow as the external pressure drops at successively higher altitudes. Lastly, none of the prediction systems offer a clear way of quantifying the uncertainties in their own landing site predictions. From the perspective of a chase car, it would be extremely useful to know the 95\% or 50\% confidence interval on a prediction because this will affect the choices of the ground crew in attempting to position themselves near the eventual landing site.
+
+-unclear velocity tracking
 
 \section{Methodology}
 
-\section{Table Of Experiments}
+-general structure of program
+-measurement of balloon
+-area correction
+-velocity correction
+
+%\section{Table Of Experiments}
 
 \section{Results and Discussion}
 
-\section{Conclusion}
+-explanation of how well the code works, graphs of error over time
+-timing of calculations
+-simulated flight
+-discussion of limitations, where do largest errors occur and why
+-close launch and landing sites, lack of online data
 
 \section{Future Work}
 
+There is much that can still be done to improve the accuracy and usability of the landing site prediction software. As previously discussed, many of the potential issues of the software are obscured by the limitations of the data from the YERRALOON1 flight. Committing to a new HAB launch, or obtaining the telemetry from a prior launch (including vital data such as payload mass and gas mass) is an important next step in testing the accuracy of the prediction software in order to understand when and how it fails. \\
+
+Future iterations of the program might also benefit from having an active connection to a computer on the ground (i.e. the program might be able to make use of data uploaded from the ground computer). For example, this might be useful in cases where the payload is experiencing a large horizontal drift where angular speed data is less relevant. 
+
+-expanded to take in a more general form of telemetry, more options
+-ability to take a more probabilistic approach (e.g. stochastic windbands, stochastic mass)
+
+\section{Conclusion}
+
 \section{References}
-
-\section{Appendix 1}
-
-
-
-
 
 \end{document}

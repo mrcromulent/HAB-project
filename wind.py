@@ -44,8 +44,7 @@ def calc_windspeed(wind_lower_data,wind_upper_data):
     
     ac = landing.ac_at_tp(temp,press)
 
-#    return [lower_elev,upper_elev,ac*deg_lat/dt,ac*deg_long/dt,temp,press,humidity]
-    return [lower_elev,upper_elev,deg_lat/dt,deg_long/dt,temp,press,humidity]
+    return [lower_elev,upper_elev,ac*deg_lat/dt,ac*deg_long/dt,temp,press,humidity]
     
     
 def make_new_band(state,wind_lower_data,winds):

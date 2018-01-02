@@ -239,7 +239,7 @@ def refine_drag_calculation(wind_lower_data,state,winds):
     
     global v0_global
     
-    #find the distance and time taken
+    #find the distance and time taken between now and the last windband
     
     at = datetime.strptime(state[0], FMT) - datetime.strptime(wind_lower_data[0], FMT)
     actual_time = at.total_seconds()
