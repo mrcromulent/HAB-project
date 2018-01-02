@@ -34,7 +34,7 @@ descent_m = pay_m + 0.05 * bal_m #Descent mass, kg
 ##DRAG COEFFICIENTS
 
 C = 1.75 #from https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/rktvrecv.html
-C_box = 1.15 #from https://www.engineersedge.com/fluid_flow/rectangular_flat_plate_drag_14036.htm
+C_payload = 1.15 #from https://www.engineersedge.com/fluid_flow/rectangular_flat_plate_drag_14036.htm
 
 #global variable to track descent velocity
 v0_global = 0
@@ -89,7 +89,7 @@ def drag_at_alt(alt,descent_rate):
     
     rho = density_at_alt(alt)
     
-    return 0.5 * descent_rate ** 2 * rho * (C * parachute_area + C_box * payload_area)
+    return 0.5 * descent_rate ** 2 * rho * (C * parachute_area + C_payload * payload_area)
 
 def find_bandchange(windband,v0):
     """find_bandchange finds the change in latitude, longitude and altitude
