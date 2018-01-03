@@ -11,7 +11,7 @@
 \contentsline {subsection}{\numberline {5.5}Definitions}{8}{subsection.5.5}
 \contentsline {section}{\numberline {6}Project Definition}{8}{section.6}
 \contentsline {subsection}{\numberline {6.1}Background}{8}{subsection.6.1}
-\contentsline {subsection}{\numberline {6.2}Objective}{8}{subsection.6.2}
+\contentsline {subsection}{\numberline {6.2}Objective}{9}{subsection.6.2}
 \contentsline {subsection}{\numberline {6.3}Scope}{9}{subsection.6.3}
 \contentsline {subsection}{\numberline {6.4}Project Requirements}{9}{subsection.6.4}
 \contentsline {section}{\numberline {7}Deliverables and Outcomes}{12}{section.7}

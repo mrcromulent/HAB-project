@@ -123,7 +123,7 @@ Advanced Instrumentation and Technology Centre
  \hline
  Version & Date & Author & Change \\ [0.5ex] 
  \hline
- 0.1 & 23 Nov 2017 & UPB & Started Report \\
+ 0.1 & 23 Nov 2017 & UPB & Started Report, populated sections with notes \\
  \hline
   0.2 & 2 Jan 2018 & UPB & Improved formatting and started writing \\
  \hline
@@ -148,17 +148,17 @@ Advanced Instrumentation and Technology Centre
 
 High-altitude balloons (HABs) are unmanned, near-space balloons which are released from the Earth's surface. They rise (typically to the strastosphere), before bursting and falling back down to the ground, sometimes hundreds of kilometers from their launch site. HABs are often constructed for the purposes of gathering scientific data (such as temperature, pressure and wind speed) or just to take photographs from a high altitude. However, variations in flight characteristics like weather conditions, balloon design and obstacles can render a HAB's landing site unpredictable. This in turn makes the process of retrieving the balloon and accessing its data difficult. \\
 
-The Advanced Instrumentation Technology Centre (AITC) has already participated in HAB launches in the past, including in December 2017. The balloon payload carried a Raspberry Pi microprocessor running freeware published online by Dave Ackerman [], allowing the payload to gather data about its current and historical GPS coordinates and altitude. The purpose of this project is to develop software to predict the HAB landing site using these data and allow the prediction to be transmitted to a computer on the ground.
+The Advanced Instrumentation Technology Centre (AITC) has already participated in HAB launches in the past, including the YERRALOON1 flight in December 2017. The balloon payload carried a Raspberry Pi microprocessor running freeware published by Dave Ackerman [], allowing the payload to gather data about its current and historical GPS coordinates and altitude. The purpose of this project is to develop software to predict the HAB landing site using these data and allow the prediction to be transmitted to a computer on the ground.
 
 \subsection{Document Purpose}
 
 This document contains an outline of the work currently completed on the HAB Landing Site Prediction (HAB-LPR) project as completed by the author during the 2017-18 Summer Research Internship (i.e. a Summer Research Scholarship specifically for students of the ANU). The internship was completed under the supervision of the AITC, of which the project supervisor, Dr. James Gilbert, is an employee. \\
 
-The purpose of this document is to:
+The report seeks to:
 \begin{itemize}
 \item Document the ongoing progress of the HAB-LPR project, including issues
 \item Explain and justify the research, development and management process undertaken by the author
-\item Establish the current state of the project at the completion of the internship
+\item Establish the current state of the project upon the completion of the internship
 \item Identify areas for potential future work, with the aim of allowing others to continue the project
 \end{itemize}
 
@@ -173,8 +173,7 @@ The report is written with the intention of being used by:
 \end{itemize}
 
 \subsection{Applicable Documents}
-Other documents exist in the corpus of documents for this project. In particular, HAB-LPR-SRD-0001\_Landing\_prediction\_system\_requirements\_v1.1 establishes scope and engineering requirements for the project, as defined by Dr. Gilbert. A draft project plan was written in late November 2017 in response to these requirements establishing project milestones and an initial project timetable. These can be found in: HAB-LPR-SRD-0002-HAB\_project\_plan\_v1.1 .
-
+Other relevant documents exist in the corpus of the project. In particular, HAB-LPR-SRD-0001\_Landing\_prediction\_system\_requirements\_v1.1 establishes scope and engineering requirements for the project, as defined by Dr. Gilbert. A draft project plan was written in late November 2017 in response to these requirements establishing project milestones and an initial project timetable. These can be found in: HAB-LPR-SRD-0002-HAB\_project\_plan\_v1.1 .
 
 \subsection{Acronyms and Abbreviations}
 
@@ -188,10 +187,10 @@ Other documents exist in the corpus of documents for this project. In particular
 \subsection{Definitions}
 
 \begin{itemize}
-\item Tracker - 
-\item Transmitter -
-\item Payload -
-\item Windband ???
+\item Payload - The set of objects carried by the balloon, excluding the equipment used to attach these to the balloon (e.g. rope, wire)
+\item Tracker - The software and hardware running on the Raspberry Pi allowing for the collection and recording of data, including GPS coordinates and altitude
+\item Transmitter - Radio frequency transmitter designed to transmit tracker data to chase cars and listening stations on the ground
+\item Windband - A model of wind in the atmosphere. Wind in these windbands is modelled by the payload's 'angular speed' - the number of degrees of latitude (or longitude) by which the payload would move when passing through the windband divided by the amount of time taken to pass through the band. 
 \end{itemize}
 
 
@@ -392,6 +391,12 @@ Ackerman's prediction software also provides no correction for the differences i
 
 \section{Methodology}
 
+[] diagram of program
+
+This section describes the structure of the program. 
+
+On system boot, the main script file, prediction.py, is executed. The program initially imports commands from the associated scripts other_comm
+
 -general structure of program
 -measurement of balloon
 -area correction
@@ -405,16 +410,13 @@ Ackerman's prediction software also provides no correction for the differences i
 -timing of calculations
 -simulated flight
 -discussion of limitations, where do largest errors occur and why
--close launch and landing sites, lack of online data
+-close launch and landing sites, lack of online data. Lack of accurate mass data from YERRALOON1
 
 \section{Future Work}
 
 There is much that can still be done to improve the accuracy and usability of the landing site prediction software. As previously discussed, many of the potential issues of the software are obscured by the limitations of the data from the YERRALOON1 flight. Committing to a new HAB launch, or obtaining the telemetry from a prior launch (including vital data such as payload mass and gas mass) is an important next step in testing the accuracy of the prediction software in order to understand when and how it fails. \\
 
-Future iterations of the program might also benefit from having an active connection to a computer on the ground (i.e. the program might be able to make use of data uploaded from the ground computer). For example, this might be useful in cases where the payload is experiencing a large horizontal drift where angular speed data is less relevant. 
-
--expanded to take in a more general form of telemetry, more options
--ability to take a more probabilistic approach (e.g. stochastic windbands, stochastic mass)
+Future iterations of the program might also benefit from having an active connection to a computer on the ground (i.e. the program might be able to make use of data uploaded from the ground computer). For example, this might be useful in cases where the payload is experiencing a large horizontal drift, where angular speed data is less relevant. A more robust program would also be able to handle input data in different formats; this would mean that the prediction system would no longer be reliant on simultaneously running the Ackerman tracker code. Lastly, the program would benefit from the ability to take a more probabilistic approach to the landing prediction algorithm, which would help to quantify the uncertainty in the prediction - for example, the uncertainty in the descent mass of the payload or uncertainty in windspeed might be better modelled using a stochastic rather than deterministic process.
 
 \section{Conclusion}
 

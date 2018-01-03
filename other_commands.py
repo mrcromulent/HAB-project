@@ -28,8 +28,6 @@ def read_properly(f):
     a line of telemetry beginning with '$$YERRA' or it reaches the end
     of the file. It will either return the properly formatted telemetry
     as a list or (in the case of reaching the end) will return ['end']"""
-    #this function reads until it finds a line starting with $$YERRA
-    #or the end of the file object f
     
     tmp = f.readline().split(',')
     
@@ -87,7 +85,7 @@ def add_telemetry(filepath):
     
     try:
         
-        #Open the file as f
+        #Open the file as f and call read_properly
         
         with open(filepath) as f:
             f.seek(read_pos)

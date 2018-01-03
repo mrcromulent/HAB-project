@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.10.12)  2 JAN 2018 18:10
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.10.12)  3 JAN 2018 10:31
 entering extended mode
 **./HAB_project_report.tex
 (HAB_project_report.tex
@@ -813,36 +813,28 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 159.
  [7] [8]
-Overfull \hbox (0.26407pt too wide) in paragraph at lines 218--219
+Overfull \hbox (0.26407pt too wide) in paragraph at lines 217--218
 \OT1/cmr/m/n/10.95 The sys-tem re-quire-ments (as re-pro-duced from HAB-LPR-SRD
 -0001) are listed be-low. These
  []
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 227--227
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 226--226
 []|\OT1/cmr/m/n/10.95 Requirement| 
  []
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 239--239
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 238--238
 []|\OT1/cmr/m/n/10.95 Requirement| 
  []
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 251--251
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 250--250
 []|\OT1/cmr/m/n/10.95 Requirement| 
  []
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 263--263
-[]|\OT1/cmr/m/n/10.95 Requirement| 
- []
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 275--275
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 262--262
 []|\OT1/cmr/m/n/10.95 Requirement| 
  []
 
@@ -850,7 +842,7 @@ Overfull \hbox (4.11038pt too wide) in paragraph at lines 275--275
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 287--287
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 274--274
 []|\OT1/cmr/m/n/10.95 Requirement| 
  []
 
@@ -858,7 +850,7 @@ Overfull \hbox (4.11038pt too wide) in paragraph at lines 287--287
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 299--299
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 286--286
 []|\OT1/cmr/m/n/10.95 Requirement| 
  []
 
@@ -866,7 +858,7 @@ Overfull \hbox (4.11038pt too wide) in paragraph at lines 299--299
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 311--311
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 298--298
 []|\OT1/cmr/m/n/10.95 Requirement| 
  []
 
@@ -874,7 +866,7 @@ Overfull \hbox (4.11038pt too wide) in paragraph at lines 311--311
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 323--323
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 310--310
 []|\OT1/cmr/m/n/10.95 Requirement| 
  []
 
@@ -882,7 +874,7 @@ Overfull \hbox (4.11038pt too wide) in paragraph at lines 323--323
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 335--335
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 322--322
 []|\OT1/cmr/m/n/10.95 Requirement| 
  []
 
@@ -890,7 +882,15 @@ Overfull \hbox (4.11038pt too wide) in paragraph at lines 335--335
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-Overfull \hbox (4.11038pt too wide) in paragraph at lines 347--347
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 334--334
+[]|\OT1/cmr/m/n/10.95 Requirement| 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Overfull \hbox (4.11038pt too wide) in paragraph at lines 346--346
 []|\OT1/cmr/m/n/10.95 Requirement| 
  []
 
@@ -898,60 +898,61 @@ Overfull \hbox (4.11038pt too wide) in paragraph at lines 347--347
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [9] [10] [11]
-Underfull \hbox (badness 10000) in paragraph at lines 359--362
+Underfull \hbox (badness 10000) in paragraph at lines 358--361
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 377--378
+Underfull \hbox (badness 10000) in paragraph at lines 376--377
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 379--380
+Underfull \hbox (badness 10000) in paragraph at lines 378--379
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 381--382
+Underfull \hbox (badness 10000) in paragraph at lines 380--381
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 383--384
+Underfull \hbox (badness 10000) in paragraph at lines 382--383
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 387--388
+Underfull \hbox (badness 10000) in paragraph at lines 386--387
 
  []
 
 [12
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 412--413
+Underfull \hbox (badness 10000) in paragraph at lines 411--412
 
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 423.
-[13] [14]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 423.
+[13]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 419.
+ [14]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 419.
  (HAB_project_report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 423.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 423.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 419.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 419.
 Package rerunfilecheck Info: File `HAB_project_report.out' has not changed.
 (rerunfilecheck)             Checksum: FD13D525BB17F2F0253850E97D448363;1512.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 423.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 419.
  ) 
 Here is how much of TeX's memory you used:
  7257 strings out of 493334
  102271 string characters out of 3139248
- 215790 words of memory out of 3000000
+ 216790 words of memory out of 3000000
  10640 multiletter control sequences out of 15000+200000
  9709 words of font info for 35 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 29i,11n,43p,1020b,352s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 29i,11n,43p,1020b,400s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Pr
 ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Fi
 les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKT
@@ -959,7 +960,7 @@ eX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fo
 nts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1
 /public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/a
 msfonts/cm/cmsy10.pfb>
-Output written on HAB_project_report.pdf (14 pages, 174823 bytes).
+Output written on HAB_project_report.pdf (14 pages, 175882 bytes).
 PDF statistics:
  241 PDF objects out of 1000 (max. 8388607)
  44 named destinations out of 1000 (max. 500000)
