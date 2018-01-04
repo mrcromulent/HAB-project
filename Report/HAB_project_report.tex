@@ -7,7 +7,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{fancyhdr}
 
-\newcommand{\vers}{0.2}
+\newcommand{\vers}{0.3}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -127,6 +127,8 @@ Advanced Instrumentation and Technology Centre
  \hline
   0.2 & 2 Jan 2018 & UPB & Improved formatting and started writing \\
  \hline
+   0.3 & 4 Jan 2018 & UPB & Completed first draft. \\
+ \hline
 \end{tabular}
 \end{table}
 
@@ -148,7 +150,7 @@ Advanced Instrumentation and Technology Centre
 
 High-altitude balloons (HABs) are unmanned, near-space balloons which are released from the Earth's surface. They rise (typically to the strastosphere), before bursting and falling back down to the ground, sometimes hundreds of kilometers from their launch site. HABs are often constructed for the purposes of gathering scientific data (such as temperature, pressure and wind speed) or just to take photographs from a high altitude. However, variations in flight characteristics like weather conditions, balloon design and obstacles can render a HAB's landing site unpredictable. This in turn makes the process of retrieving the balloon and accessing its data difficult. \\
 
-The Advanced Instrumentation Technology Centre (AITC) has already participated in HAB launches in the past, including the YERRALOON1 flight in December 2017. The balloon payload carried a Raspberry Pi microprocessor running freeware published by Dave Ackerman [], allowing the payload to gather data about its current and historical GPS coordinates and altitude. The purpose of this project is to develop software to predict the HAB landing site using these data and allow the prediction to be transmitted to a computer on the ground.
+The Advanced Instrumentation Technology Centre (AITC) has already participated in HAB launches in the past, including the YERRALOON1 flight in December 2017. The balloon payload carried a Raspberry Pi microprocessor running freeware published by Dave Ackerman [], allowing the payload to gather data including its current and historical GPS coordinates and altitude. The purpose of this project is to develop software to predict the HAB landing site using these data and allow the prediction to be transmitted to a computer on the ground.
 
 \subsection{Document Purpose}
 
@@ -173,7 +175,7 @@ The report is written with the intention of being used by:
 \end{itemize}
 
 \subsection{Applicable Documents}
-Other relevant documents exist in the corpus of the project. In particular, HAB-LPR-SRD-0001\_Landing\_prediction\_system\_requirements\_v1.1 establishes scope and engineering requirements for the project, as defined by Dr. Gilbert. A draft project plan was written in late November 2017 in response to these requirements establishing project milestones and an initial project timetable. These can be found in: HAB-LPR-SRD-0002-HAB\_project\_plan\_v1.1 .
+Other relevant documents exist in the corpus of the project. In particular, HAB-LPR-SRD-0001\_Landing\_prediction\_system\_requirements\_v1.1 establishes scope and engineering requirements for the project, as defined in consultation with Dr. Gilbert. A draft project plan was written in late November 2017 in response to these requirements establishing project milestones and an initial project timetable. These can be found in: HAB-LPR-SRD-0002-HAB\_project\_plan\_v1.1 .
 
 \subsection{Acronyms and Abbreviations}
 
@@ -198,15 +200,20 @@ Other relevant documents exist in the corpus of the project. In particular, HAB-
 
 \subsection{Background}
 
--explain how our launch worked (parachute and retrieval)
--explain Ackerman PITS software running on the Pi
+The mechanics of a HAB launch and landing can be well understood by considering the aforementioned YERRALOON1 flight. Pre-flight prediction software exists (most notably at predict.habhub.com, a software produced by the Cambridge University Space Flight team which will be discussed in section \ref{sec:existing}) - these early predictions are required for civil aviation purposes to minimise the chances of the balloon interfering with either ground- or air-traffic. For this same reason, HAB launches usually take place in relatively isolated rural areas. After constructing a payload, the HAB's tracker and transmitter are tested on the ground to ensure they are accurately transmitting telemetry to receivers on the chase car and stationary listening posts. A parachute is then attached in between the balloon and payload to lower the descent speed that the payload will have on its fall back to Earth. The balloon is filled (typically with Helium or Hydrogen) and the payload attached and released. As YERRALOON1 continued to rise, the surrounding atmospheric pressure dropped until one hour and eighteen minutes into the flight, when the balloon burst at an altitude of approximately 32.2 km above mean sea level. It reached the ground approximately 35 minutes later and roughly 30 kilometers from the launch site. \\
+
+Throughout the flight, the Ackerman software ran on the Raspberry Pi microcontroller, nestled on the inside of the payload, transmitting telemetry to the ground. The software wrote its data into a text file named 'telemetry.txt' with formatted strings including: Callsign,packet counter,time stamp (GMT), latitude [deg], longitude [deg], altitude [m], speed, heading, number of satellites visible, internal temperature [C], external temperature [C], pressure [hPa], humidity [\%] and a checksum. For example: \\
+ $ \$ \$YERRA,698,00:23:30,-35.32110,149.00710,00747,11,16,9,50.7,31.2,932,31.1*16A8$
+The continuing transmission of these data is useful to those in the HAB chase car because it provided a continuously-updating record of the balloon's location, allowing them to anticipate the landing site while pursuing the balloon, hopefully facilitating a speedy retrieval of the payload.
+
+-HAB diagram necessary? []
 
 \subsection{Objective}
--to improve on the ackerman prediction
+The objective of this project is to write a program to run on the HAB's onboard Raspberry Pi, taking as input the data written to the telemetry.txt file and making a prediction of the landing site. The latitude/longitude coordinates of the prediction are then transmitted to the ground, hopefully allowing the chase car to position itself near the final landing site.
 
 \subsection{Scope}
 
-Existing landing prediction software runs on the balloon's main flight computer. The main process running on this computer is the tracker, which handles GPS reception, telemetry, and radio communications with the ground. Though the landing prediction system is separate to the tracker, it does interface with it - GPS data is an input, and a periodic prediction of the payload landing site is an output. Tracker-related tasks, such as driving GPS hardware or handling radio communications, are not within the scope of this project.
+There are several exclusions on the scope of the project, most notably the tasks already handled by the Ackerman software running on the main flight computer, which handles GPS reception, telemetry, and radio communications with the ground. Though the landing prediction system is separate to the tracker, it does interface with it - GPS data is an input, and a periodic prediction of the payload landing site is an output. Tracker-related tasks, such as driving GPS hardware or handling radio communications, are not within the scope of this project.
 
 %\subsection{Approach}
 
@@ -367,11 +374,13 @@ Upon completion of the project, deliverables include:
 
 \subsection{Schedule}
 
+-necessary? []
+
 %\subsection{Risk and Issue Management}
 
 \section{Literature Review}
 
-\subsection{Current Best Practice}
+\subsection{Current Best Practice} \label{sec:existing}
 
 Three well-known suites of software are currently available which are produce HAB landing site predictions, the Cambridge University Space Flight (CUSF) predictor, the ASTRA High Altitude Balloon Flight planner (property of the University of Southampton) and the Pi-In-The-Sky tracker software, created by Dave Ackerman. \\
 
@@ -391,26 +400,44 @@ Ackerman's prediction software also provides no correction for the differences i
 
 \section{Methodology}
 
-[] diagram of program
+This section describes the structure of the program. On system boot, the main script file, prediction.py, is executed. The program initially imports commands from the associated scripts landing.py, wind.py and other\_commands.py. The program also defines several quantities which must be specified by the user, including the wind\_band\_width (width of previously-defined windbands), sleep\_time (the time in between new lines of telemetry) and the prediction\_gap (which controls how often a landing prediction is made). Balloon parameters are also specified by the user in landing.py, such as the mass of gas (Helium), parachute radius, weight of payload and weight of balloon. \\
 
-This section describes the structure of the program. 
+After these definitions, the program enters a series of while loops. The first just checks to see if the telemetry.txt file has been created yet. If not, the program will wait and try again. Once a telemetry.txt file is found, the program attempts to record the coordinates of its launch site - the Ackerman code will often include some false telemetry at the start of the telemetry file, so the false\_telemetry function is called to ensure that the launch site values are accurate. \\
 
-On system boot, the main script file, prediction.py, is executed. The program initially imports commands from the associated scripts other_comm
+Once launch as begun, the program enters the main loop, which will continue to execute throughout the entire flight. Several operations occur in an execution of the main loop:
 
--general structure of program
--measurement of balloon
--area correction
--velocity correction
+\begin{enumerate}
+\item New telemetry is added to the telemetry list
+\item The state variable is extracted
+\item If the top of a windband has been crossed (payload rising), the program makes a new windband
+\item If the bottom of a windband has been crossed (payload falling), the program calls refine\_drag\_calculation
+\item If prediction\_gap seconds has passed since the last prediction, a new prediction is made
+\item The program checks how long it has been executing for and sleeps until new telemetry is expected
+\end{enumerate}
+
+-more detail on state variable, and defining a windband (including what a windband contains)
+
+-diagram of program [] \\
+
+There are two main types of corrections inherent in the prediction, Area Corrections and Velocity Corrections.\\
+
+AREA CORRECTIONS: Area corrections account for the fact that the effect of the wind is greater when the balloon-payload system has a larger area. As the program expresses wind speeds as angular speeds, the area correction (ac) is simply an extra factor on this speed. The ac is defined as the ratio of the payload area (balloon burst) to the payload + current balloon area (unburst), meaning the effect of the area correction is smallest closest to the ground, when these two areas are most similar. The unburst area is calculated using the Ideal Gas Law, as the mass of balloon gas, outside temperature and outside pressure are known. \\
+
+VELOCITY CORRECTIONS: Velocity corrections account for the fact that there is no easy way to use the velocity and heading data in the telemetry. It's extremely noisy and can be frequently distorted by environmental factors such as large gusts of wind which might not represent the windband as a whole (meaning that a better representation of the windspeed would be to take an average over the individual gusts in the windband). The refine\_drag\_calculation function attempts to do this by using actual fall data to approximate the current velocity - when the program detects that the lower bound of a windband has been crossed, the payload's descent speed is estimated as the bandwidth divided by the time taken to pass through.\\
 
 %\section{Table Of Experiments}
 
 \section{Results and Discussion}
 
--explanation of how well the code works, graphs of error over time
--timing of calculations
--simulated flight
--discussion of limitations, where do largest errors occur and why
--close launch and landing sites, lack of online data. Lack of accurate mass data from YERRALOON1
+Simulated balloon flights can be conducted using the telemetry.txt file from the YERRALOON1 flight and choosing quantities to speed up the simulation (e.g. sleep\_time = 0.001 and prediction\_gap = 0.09 corresponds to a 1000x speed simulation with predictions being made every 90 seconds of simulated time). Since the actual landing site of YERRALOON1 is known (lat = -34.37435 deg, long = 147.859 deg), the error in the landing site prediction throughout the course of an entire simulated flight is known. This can be seen in \ref{fig:errors} [], which shows the error using different combinations of the Velocity and Area corrections. Note: launch took place at approximately 00:42 GMT, with the balloon bursting at 02:00 and landing at 02:35.  
+
+\begin{figure} 
+  \includegraphics[width=\linewidth]{errors.png}
+\end{figure}
+
+As expected,the error at launch is roughly the distance between the launch and landing sites. Given that the program has not yet collected any data about the windbands above it, this makes sense. There is also a larger error around 02:00 - given that this is the period when the balloon is at the peak of its altitude (and thus has the largest number of windbands below it), it makes sense that the uncertainty in the prediction is larger here. \\
+
+There are two major sources of error with using this dataset as a method of testing the prediction algorithm though. The first is that the launch and landing sites of the balloon are already comparatively close together, meaning a prediction algorithm could just return its own latitude and longitude and still be correct to on the order of 30 kilometers. Secondly, due to some issues during the YERRALOON1 launch, very accurate records regarding payload mass, helium mass and balloon mass do not exist. The mass measurements used in this program are derived from the temperature and pressure measurements recorded at the launch site, as well as measuring the size of the balloon on footage from the launch. 
 
 \section{Future Work}
 
@@ -419,6 +446,8 @@ There is much that can still be done to improve the accuracy and usability of th
 Future iterations of the program might also benefit from having an active connection to a computer on the ground (i.e. the program might be able to make use of data uploaded from the ground computer). For example, this might be useful in cases where the payload is experiencing a large horizontal drift, where angular speed data is less relevant. A more robust program would also be able to handle input data in different formats; this would mean that the prediction system would no longer be reliant on simultaneously running the Ackerman tracker code. Lastly, the program would benefit from the ability to take a more probabilistic approach to the landing prediction algorithm, which would help to quantify the uncertainty in the prediction - for example, the uncertainty in the descent mass of the payload or uncertainty in windspeed might be better modelled using a stochastic rather than deterministic process.
 
 \section{Conclusion}
+
+\newpage
 
 \section{References}
 
