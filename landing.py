@@ -7,6 +7,7 @@ Created on Tue Dec  5 08:59:41 2017
 
 from math import exp, pi, sqrt, sin, cos, asin, radians
 from datetime import datetime
+from config import bal_m,gas_m,pay_m,output_filepath,C,C_payload,parachute_diameter,payload_area,M_gas
 FMT = '%H:%M:%S' #datetime format
 
 ##PHYSICAL CONSTANTS
@@ -14,27 +15,14 @@ FMT = '%H:%M:%S' #datetime format
 g = 9.80665 # m/s^2
 R = 8.3144598 #gas constant, m^3 Pa/ K / mol
 M_air = 0.0289644 #molar mass of air, kg/mol
-M_helium = 0.004 #molar mass of helium, kg/mol
-earth_radius = 6371 + 0.280 #km. Earth radius + temora altitude
+earth_radius = 6371 #km. Earth radius
 
-##PAYLOAD DIMENSIONS AND MASS
- 
-parachute_radius = 0.6096 #2 feet in meters
-parachute_area = pi * parachute_radius ** 2  
-payload_area = 0.3 * 0.3 #m^2
+##BALLOON PARAMETERS
+parachute_area = pi * (parachute_diameter/2) ** 2  
 area_burst = parachute_area + payload_area
 
-pay_m = 1.2 #kg
-bal_m = 1.2 #kg
-gas_m = 0.28 #kg, estimated from ideal gas law and YERRALOON1 launh footage
-
-n = gas_m / M_helium #mols of Helium gas
+n = gas_m / M_gas #mols of Helium gas
 descent_m = pay_m + 0.05 * bal_m #Descent mass, kg
-
-##DRAG COEFFICIENTS
-
-C = 1.75 #from https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/rktvrecv.html
-C_payload = 1.15 #from https://www.engineersedge.com/fluid_flow/rectangular_flat_plate_drag_14036.htm
 
 #global variable to track descent velocity
 v0_global = 0
@@ -177,7 +165,7 @@ def splat(state,winds):
         
     #write the results to the prediction file and return the current precition
         
-    with open('prediction.txt','a') as h:
+    with open(output_filepath,'a') as h:
         h.write(time + ',' + str(round(lat,6)) + ',' + str(round(long,6)) + '\n')
     
     return (lat,long)
@@ -261,3 +249,46 @@ def check_speed(speed):
     
     if v0_global > 0 and abs(speed - v0_global) > 1:
         speed = v0_global
+        
+def temp_press_at_alt(alt):
+    #from https://www.grc.nasa.gov/www/k-12/rocket/atmosmet.html
+    
+    if 0 <= alt < 11000:
+        P_b = 101325 #Pa
+        T_b = 288.15 #K
+        L_b = -0.0065
+        h_b = 0
+        
+    elif 11000 <= alt < 20000:
+        P_b = 22632.10
+        T_b = 216.65
+        L_b = 0
+        h_b = 11000
+        
+    elif 20000 <= alt < 32000:
+        P_b = 5474.89
+        T_b = 216.65
+        L_b = 0.001
+        h_b = 20000
+        
+    elif 32000 <= alt < 47000:
+        P_b = 868.02
+        T_b = 288.65
+        L_b = 0.0028
+        h_b = 32000
+        
+    if L_b != 0:
+        
+        fraction = T_b / (T_b + L_b*(alt - h_b))
+        exponent = (g * M_air)/(R * L_b)
+        
+        P = P_b * (fraction) ** exponent
+        
+        return [T_b,P]
+    
+    if L_b == 0:
+        exponent = (-g * M_air * (alt - h_b))/(R * T_b)
+        
+        P = P_b * exp(exponent)
+        
+        return [T_b,P]

@@ -7,6 +7,8 @@ Created on Tue Dec  5 09:09:55 2017
 
 import os
 from math import nan
+from config import callsign_index,packet_index,time_index,lat_index,long_index,alt_index,speed_index,\
+heading_index,satellites_index,internal_index,external_index,pressure_index,hum_check_index
 
 read_pos = 0
 safe_line = [nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan]
@@ -94,7 +96,7 @@ def add_telemetry(filepath):
             
         #Format the data
             
-        new_line = [line[0],line[1],line[2], float(line[3]),float(line[4]),\
+        new_line = [line[callsign_index],line[packet_index],line[2], float(line[3]),float(line[4]),\
                     float(line[5]),float(line[6]),float(line[7]), int(line[8]),\
                     float(line[9]),float(line[10]),float(line[11]),float(line[12]),line[13]]
         
@@ -131,7 +133,10 @@ def false_telemetry(filepath,state = None):
     else:
         [time,lat,long,alt,speed,heading] = state[:] #extract the data
         
-        return (not(-40 < lat < 0) or not(110 < long < 155) or alt < 1)
+        last_lat = safe_line[3]
+        last_long = safe_line[4]
+        
+        return ((abs(lat - last_lat) > 10) or (abs(long - last_long) > 10) or alt < 1)
     
     
 def last_safe_line():

@@ -102,48 +102,7 @@ import numpy as np
 
 
 
-def temp_press_at_alt(alt):
-    #from https://www.grc.nasa.gov/www/k-12/rocket/atmosmet.html
-    
-    if 0 <= alt < 11000:
-        P_b = 101325 #Pa
-        T_b = 288.15 #K
-        L_b = -0.0065
-        h_b = 0
-        
-    elif 11000 <= alt < 20000:
-        P_b = 22632.10
-        T_b = 216.65
-        L_b = 0
-        h_b = 11000
-        
-    elif 20000 <= alt < 32000:
-        P_b = 5474.89
-        T_b = 216.65
-        L_b = 0.001
-        h_b = 20000
-        
-    elif 32000 <= alt < 47000:
-        P_b = 868.02
-        T_b = 288.65
-        L_b = 0.0028
-        h_b = 32000
-        
-    if L_b != 0:
-        
-        fraction = T_b / (T_b + L_b*(alt - h_b))
-        exponent = (g_0 * M)/(R_star * L_b)
-        
-        P = P_b * (fraction) ** exponent
-        
-        return [T_b,P]
-    
-    if L_b == 0:
-        exponent = (-g_0 * M * (alt - h_b))/(R_star * T_b)
-        
-        P = P_b * exp(exponent)
-        
-        return [T_b,P]
+
 
 
 ###########################################################################################
@@ -199,3 +158,8 @@ def temp_press_at_alt(alt):
 #        
 #        if not(C_new > 2 or C_new < 1):
 #            C = C_new
+
+
+
+if V = 3.6 m^3, then m_He = 0.56 kg
+but it's unlikely we got anywhere near 3.6, judging by the footage

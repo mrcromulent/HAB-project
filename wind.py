@@ -46,6 +46,7 @@ def calc_windspeed(wind_lower_data,wind_upper_data):
 
     return [lower_elev,upper_elev,ac*deg_lat/dt,ac*deg_long/dt,temp,press,humidity]
     
+
 def make_new_band(state,wind_lower_data,winds):
     """This function handles the function calls to make a new windband 
     and adds the new wind bands to the master list, winds."""

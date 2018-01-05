@@ -9,8 +9,10 @@ import time as t
 import landing
 import other_commands as oc
 import wind
+from config import fp,wind_band_width,sleep_time,prediction_gap
 
 ################################################
+import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -20,18 +22,10 @@ predictions_made = 0
 calc_times = []
 #################################################
 
-
-##TELEMTRY FILE LOCATION
-fp = 'YERRALOON1_DATA//telemetry.txt'
-
-
 ##QUANTITIES
 rising = False
 telemetry = []
 winds = []
-wind_band_width = 5000
-sleep_time = 0.001 #seconds. Usually 1.
-prediction_gap = 0.09 #seconds.
 last_prediction_time = 0
 telemetry_cutoff = 2000; #lines of $$YERRA telemetry before the program exits
 
@@ -55,7 +49,7 @@ while oc.false_telemetry(fp):
 
 while len(telemetry) < telemetry_cutoff:
     
-    try:
+#    try:
     
         #Record the start time of this loop
         loop_start = t.time()
@@ -113,13 +107,29 @@ while len(telemetry) < telemetry_cutoff:
         
             t.sleep(sleep_time - calc_time)
         
-    except: #Failsafe. If any errors occur, the program exits
-        break
+#    except: #Failsafe. If any errors occur, the program exits
+#        break
         
 ##############################################################
+        
+with open("ackerman_pred.obj", "rb") as fp:
+    ack_pred = pickle.load(fp)
+    
+how_far_ack = []
+prediction_ack_no = 0
+
+for i in range(0,len(ack_pred)):
+    prediction  = [float(ack_pred[i][3]),float(ack_pred[i][4])]
+    time = ack_pred[i][2]
+    ackerman_prediction = landing.how_far(prediction,time)
+    how_far_ack.append(ackerman_prediction[1])
+    prediction_ack_no += 1
+
+y = np.linspace(0,130,prediction_ack_no)
 x = np.linspace(0,130,predictions_made)
 plt.xticks(x,times_list,rotation = 'vertical')
 plt.plot(x,how_far_list)
+plt.plot(y,how_far_ack)
 plt.ylabel('Error in landing site prediction [km]')
 plt.xlabel('Time [GMT, equivalent to AEDT - 11]')
 plt.show()
