@@ -7,7 +7,7 @@ Created on Tue Dec  5 08:59:41 2017
 
 from math import exp, pi, sqrt, sin, cos, asin, radians
 from datetime import datetime
-from config import bal_m,gas_m,pay_m,output_filepath,C,C_payload,parachute_diameter,payload_area,M_gas
+from config import bal_m,pay_m,output_filepath,C,parachute_diameter,payload_area,balloon_volume
 FMT = '%H:%M:%S' #datetime format
 
 ##PHYSICAL CONSTANTS
@@ -18,10 +18,8 @@ M_air = 0.0289644 #molar mass of air, kg/mol
 earth_radius = 6371 #km. Earth radius
 
 ##BALLOON PARAMETERS
-parachute_area = pi * (parachute_diameter/2) ** 2  
+parachute_area =  pi * (parachute_diameter/2) ** 2  
 area_burst = parachute_area + payload_area
-
-n = gas_m / M_gas #mols of Helium gas
 descent_m = pay_m + 0.05 * bal_m #Descent mass, kg
 
 #global variable to track descent velocity
@@ -77,7 +75,7 @@ def drag_at_alt(alt,descent_rate):
     
     rho = density_at_alt(alt)
     
-    return 0.5 * descent_rate ** 2 * rho * (C * parachute_area + C_payload * payload_area)
+    return 0.5 * descent_rate ** 2 * rho * (C * parachute_area) 
 
 def find_bandchange(windband,v0):
     """find_bandchange finds the change in latitude, longitude and altitude
@@ -220,22 +218,26 @@ def ac_at_tp(temp,press):
     
     return area_burst/area_unburst
 
-def refine_drag_calculation(wind_lower_data,state,winds):
+def refine_drag_calculation(wind_lower_data,state):
     """This function refines the value of v0_global (the global variable
     tracking payload descent velocity) using the distance and time values
     of the payload in the previous windband."""
     
-    global v0_global
+    global C
     
     #find the distance and time taken between now and the last windband
     
+    alt = state[3]
+    
     at = datetime.strptime(state[0], FMT) - datetime.strptime(wind_lower_data[0], FMT)
     actual_time = at.total_seconds()
-    dist = state[3] - wind_lower_data[3]
-    
-    #update v0_global
+    dist = alt - wind_lower_data[3]
     
     v0_global = dist/actual_time
+    
+    rho = density_at_alt(alt)
+    
+    C = (4 * C + find_C(v0_global,rho)) / 5
     
     #reset wind_lower_data
                 
@@ -248,8 +250,10 @@ def check_speed(speed):
     with the best current estimate of payload descent velocity, v0_global."""
     
     if v0_global > 0 and abs(speed - v0_global) > 1:
-        speed = v0_global
+        return v0_global
         
+    return speed
+
 def temp_press_at_alt(alt):
     #from https://www.grc.nasa.gov/www/k-12/rocket/atmosmet.html
     
@@ -292,3 +296,20 @@ def temp_press_at_alt(alt):
         P = P_b * exp(exponent)
         
         return [T_b,P]
+    
+def find_gas_n(start_temp,start_pres):
+    global n
+    
+    n = (start_pres * balloon_volume / (R * start_temp))
+    
+
+def find_terminal_velocity(alt):
+    
+    rho = density_at_alt(alt)
+    
+    return sqrt(descent_m * g / (0.5 * C * rho * parachute_area))
+    
+
+def find_C(descent_rate,rho):
+    
+    return (descent_m * g)/(0.5 * rho * descent_rate * descent_rate);

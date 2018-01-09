@@ -42,7 +42,9 @@ while oc.false_telemetry(fp):
     print('Waiting for launch site values. Ignoring false telemetry.')
     t.sleep(sleep_time)
 
-(start_time,start_lat,start_long,start_elev) = oc.record_launch_values(fp)
+#Assign variables to the start values and calculate the number of mols of gas
+(start_time,start_lat,start_long,start_elev,start_temp,start_pres) = oc.record_launch_values(fp)
+landing.find_gas_n(start_temp,start_pres)
     
 
 ##MAIN LOOP
@@ -77,9 +79,9 @@ while len(telemetry) < telemetry_cutoff:
                 #...Make a new wind band if rising
                 [winds,wind_lower_data] = wind.make_new_band(state,wind_lower_data,winds)
             
-            elif (wind_lower_data[3] - alt) >= wind_band_width:
-                #...Or refine the drag calculation if falling
-                wind_lower_data = landing.refine_drag_calculation(wind_lower_data,state,winds)           
+#            elif (wind_lower_data[3] - alt) >= wind_band_width:
+#                #...Or refine the drag calculation if falling
+#                wind_lower_data = landing.refine_drag_calculation(wind_lower_data,state)
                 
                 
             #If sufficient time has passed, predict the landing site using splat
@@ -118,7 +120,7 @@ with open("ackerman_pred.obj", "rb") as fp:
 how_far_ack = []
 prediction_ack_no = 0
 
-for i in range(0,len(ack_pred)):
+for i in range(0,len(ack_pred),20):
     prediction  = [float(ack_pred[i][3]),float(ack_pred[i][4])]
     time = ack_pred[i][2]
     ackerman_prediction = landing.how_far(prediction,time)
@@ -129,9 +131,9 @@ y = np.linspace(0,130,prediction_ack_no)
 x = np.linspace(0,130,predictions_made)
 plt.xticks(x,times_list,rotation = 'vertical')
 plt.plot(x,how_far_list)
-plt.plot(y,how_far_ack)
 plt.ylabel('Error in landing site prediction [km]')
 plt.xlabel('Time [GMT, equivalent to AEDT - 11]')
+plt.plot(y,how_far_ack)
 plt.show()
 a = sorted(calc_times,reverse = True)
 a2 = [i for i in a if i > 0]

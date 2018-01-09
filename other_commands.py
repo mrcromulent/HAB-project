@@ -8,7 +8,7 @@ Created on Tue Dec  5 09:09:55 2017
 import os
 from math import nan
 from config import callsign_index,packet_index,time_index,lat_index,long_index,alt_index,speed_index,\
-heading_index,satellites_index,internal_index,external_index,pressure_index,hum_check_index
+heading_index,satellites_index,internal_index,external_index,pressure_index,hum_check_index,callsign
 
 read_pos = 0
 safe_line = [nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan]
@@ -33,12 +33,12 @@ def read_properly(f):
     
     tmp = f.readline().split(',')
     
-    if tmp[0] == '$$YERRA': #Telemetry found
+    if tmp[0] == callsign: #Telemetry found
         
         #split the humidity and checksum into separate elements
         
-        tmp2 = tmp[12].split('*')
-        tmp.pop()
+        tmp2 = tmp[hum_check_index].split('*')
+        tmp.pop(hum_check_index)
         tmp.extend(tmp2)
         
         return tmp
@@ -65,12 +65,15 @@ def record_launch_values(filepath):
             
         #record and return launch values
         
-        start_time = line[2]
-        start_lat = float(line[3])
-        start_long = float(line[4])
-        start_elev = float(line[5])
+        start_time = line[time_index]
+        start_lat = float(line[lat_index])
+        start_long = float(line[long_index])
+        start_elev = float(line[alt_index])
         
-        return (start_time,start_lat,start_long,start_elev)
+        start_temp = float(line[external_index]) + 273.15
+        start_pres = float(line[pressure_index]) * 100
+        
+        return (start_time,start_lat,start_long,start_elev,start_temp,start_pres)
 
     except (IndexError,FileNotFoundError,ValueError):
         safe_launch_values = last_safe_line()
@@ -96,9 +99,9 @@ def add_telemetry(filepath):
             
         #Format the data
             
-        new_line = [line[callsign_index],line[packet_index],line[2], float(line[3]),float(line[4]),\
-                    float(line[5]),float(line[6]),float(line[7]), int(line[8]),\
-                    float(line[9]),float(line[10]),float(line[11]),float(line[12]),line[13]]
+        new_line = [line[callsign_index],line[packet_index],line[time_index], float(line[lat_index]),float(line[long_index]),\
+                    float(line[alt_index]),float(line[speed_index]),float(line[heading_index]), int(line[satellites_index]),\
+                    float(line[internal_index]),float(line[external_index]),float(line[pressure_index]),float(line[-2]),line[-1]]
         
         #Check for false telemetry
         
@@ -127,7 +130,7 @@ def false_telemetry(filepath,state = None):
     True if any of these tests are failed."""
     
     if state == None: #For the case where state has not been defined yet
-        (start_time,start_lat,start_long,start_elev) = record_launch_values(filepath)
+        (start_time,start_lat,start_long,start_elev,start_temp,start_pres) = record_launch_values(filepath)
         return (start_time == '00:00:00' or start_lat == 0.0 or start_long == 0.0 or start_elev == 0.0)
     
     else:
