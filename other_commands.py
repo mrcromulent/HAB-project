@@ -5,6 +5,7 @@ Created on Tue Dec  5 09:09:55 2017
 @author: Pierre
 """
 from os import stat
+from landing import temp_press_at_alt
 from math import nan
 from config import callsign_index,packet_index,time_index,lat_index,long_index,alt_index,speed_index,\
 heading_index,satellites_index,internal_index,external_index,pressure_index,hum_check_index,callsign
@@ -12,6 +13,7 @@ heading_index,satellites_index,internal_index,external_index,pressure_index,hum_
 read_pos = 0
 safe_line = [nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan]
 optional_dict = {}
+optional_quantities = {'External': 10,'Heading': 7,'Hum_Check': 12,'Internal': 9,'Packets': 1,'Pressure': 11,'Satellites': 8,'Speed': 6}
 
 def file_empty(filepath):
     """file_empty checks the status of the file at filepath. If it's empty 
@@ -68,12 +70,16 @@ def record_launch_values(filepath):
         start_time = line[time_index]
         start_lat = float(line[lat_index])
         start_long = float(line[long_index])
-        start_elev = float(line[alt_index])
+        start_alt = float(line[alt_index])
         
-        start_temp = float(line[external_index]) + 273.15
-        start_pres = float(line[pressure_index]) * 100
+        if (optional_dict.get('External') == None or optional_dict.get('Pressure') == None):
+            [start_temp,start_pres] = temp_press_at_alt(start_alt)
         
-        return (start_time,start_lat,start_long,start_elev,start_temp,start_pres)
+        else:
+            start_temp = float(line[external_index]) + 273.15
+            start_pres = float(line[pressure_index]) * 100
+        
+        return (start_time,start_lat,start_long,start_alt,start_temp,start_pres)
 
     except (IndexError,FileNotFoundError,ValueError):
         safe_launch_values = last_safe_line()
@@ -98,10 +104,14 @@ def add_telemetry(filepath):
             update_read_position(f.tell())
             
         #Format the data
+        
+        if len(optional_dict) == 8:
             
-        new_line = [line[callsign_index],line[packet_index],line[time_index], float(line[lat_index]),float(line[long_index]),\
-                    float(line[alt_index]),float(line[speed_index]),float(line[heading_index]), int(line[satellites_index]),\
-                    float(line[internal_index]),float(line[external_index]),float(line[pressure_index]),float(line[-2]),line[-1]]
+            new_line = [line[callsign_index],line[packet_index],line[time_index], float(line[lat_index]),float(line[long_index]),\
+                        float(line[alt_index]),float(line[speed_index]),float(line[heading_index]), int(line[satellites_index]),\
+                        float(line[internal_index]),float(line[external_index]),float(line[pressure_index]),float(line[-2]),line[-1]]
+        else:
+            new_line = fill_in_missing_data()
         
         #Check for false telemetry
         
@@ -180,8 +190,7 @@ def identify_provided_data(indices):
     
     #Identify if any vital components are missing
     
-    if (callsign_index == 'NI' or time_index == 'NI' or lat_index == 'NI' or long_index == 'NI'\
-        or alt_index == 'NI'):
+    if (callsign_index == 'NI' or time_index == 'NI' or lat_index == 'NI' or long_index == 'NI' or alt_index == 'NI'):
         
         raise Exception('Callsign, time, latitude, longitude and altitude data MUST be provided. \
                         At least one has been marked as NI (not included)')
@@ -211,3 +220,11 @@ def identify_provided_data(indices):
         
     if not(hum_check_index == 'NI'):
         optional_dict['Hum_Check'] = hum_check_index
+        
+        
+def fill_in_missing_data():
+    
+    diff = set(optional_quantities.keys()) - set(optional_dict.keys())
+    
+    for elem in diff:
+        pass
