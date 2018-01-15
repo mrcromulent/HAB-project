@@ -6,7 +6,6 @@ Created on Tue Dec  5 13:33:53 2017
 """
 
 from datetime import datetime
-import landing
 FMT = '%H:%M:%S' #datetime format
 
 
@@ -15,8 +14,7 @@ def calc_windspeed(wind_lower_data,wind_upper_data):
     arguments the state values from the top and bottom of the windband.
     calc_windspeed() finds the amount of time spent in the band and divides
     the change in latitude and longitude by this time to produce an angular
-    speed (deg lat/sec and deg long/sec). These are then scaled by the 
-    area_correction factor ac (See: landing.ac_at_tp()). The final windband 
+    speed (deg lat/sec and deg long/sec). The final windband 
     includes the upper and lower altitudes of the band,the angular speeds
     and the average temperature, pressure and humidity, in Kelvin, Pascal
     and decimal respectively."""
@@ -34,17 +32,12 @@ def calc_windspeed(wind_lower_data,wind_upper_data):
     lower_elev = wind_lower_data[3]
     upper_elev = wind_upper_data[3]
         
-    #Extract average temperature and pressure. Convert to Pascal and Kelvin and decimal
+    #Extract average temperature and pressure. Convert to Pascal, Kelvin and decimal
     
     temp = 0.5 * (wind_lower_data[6]  + wind_upper_data[6]) + 273.2
     press = 0.5 * 100 * (wind_lower_data[7] + wind_upper_data[7])
     humidity = 0.5 * 1/100 * (wind_lower_data[8]  + wind_upper_data[8])
-    
-    #Find the area correction
-    
-#    ac = landing.ac_at_tp(temp,press)
-#
-#    return [lower_elev,upper_elev,ac*deg_lat/dt,ac*deg_long/dt,temp,press,humidity]
+
     return [lower_elev,upper_elev,deg_lat/dt,deg_long/dt,temp,press,humidity]
 
 def make_new_band(state,wind_lower_data,winds):

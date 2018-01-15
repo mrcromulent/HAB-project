@@ -20,38 +20,51 @@ how_far_list = []
 times_list = []
 predictions_made = 0
 calc_times = []
+telemetry_cutoff = 2000; #lines of telemetry before the program exits
 #################################################
 
 ##QUANTITIES
 rising = False
+falling = False
+speed_state = []
 telemetry = []
 winds = []
 last_prediction_time = 0
-telemetry_cutoff = 2000; #lines of $$YERRA telemetry before the program exits
 
 
 ##SETUP
 
-#Check if the file has any data written to it. If not, wait sleep_time seconds and try again.
-while oc.file_empty(fp):
-    print('Telemetry file empty or non-existant.')
-    t.sleep(sleep_time)
+try:
 
-#Record the position and time of the launch site, ignoring false telemetry
-while oc.false_telemetry(fp):
-    print('Waiting for launch site values. Ignoring false telemetry.')
-    t.sleep(sleep_time)
-
-#Assign variables to the start values and calculate the number of mols of gas
-(start_time,start_lat,start_long,start_elev,start_temp,start_pres) = oc.record_launch_values(fp)
-landing.find_gas_n(start_temp,start_pres)
+    #Check if the file has any data written to it. If not, wait sleep_time seconds and try again.
+    while oc.file_empty(fp):
+        t.sleep(sleep_time)
     
+    #Skip any existing telemetry (e.g. from previous flights)
+    oc.skip_telemetry(fp)
+    
+    #WAIT UNTIL NEW TELEMETRY IS ADDED? call to read_properly?
+    
+    #Record the position and time of the launch site, ignoring false telemetry
+    while oc.false_telemetry(fp):
+        t.sleep(sleep_time)
+    
+    #Assign variables to the start values and calculate the number of mols of gas
+    (start_time,start_lat,start_long,start_elev,start_temp,start_pres) = oc.record_launch_values(fp)
+    landing.find_gas_n(start_temp,start_pres)
+    
+except:
+    pass
 
 ##MAIN LOOP
-
-while len(telemetry) < telemetry_cutoff:
     
+########################################################
+
+while len(telemetry) < telemetry_cutoff: #while True:
+     
 #    try:
+    
+########################################################    
     
         #Record the start time of this loop
         loop_start = t.time()
@@ -73,17 +86,26 @@ while len(telemetry) < telemetry_cutoff:
             #Add the new telemetry to the list of telemetry
             telemetry.append(new_telemetry)
             
+            #Refine the speed calculation
+            if falling == True: 
+                speed_state = landing.refine_speed(state,speed_state)
+            
             #If a wind band has been crossed ...
             
             if (alt - wind_lower_data[3]) >= wind_band_width:
                 #...Make a new wind band if rising
                 [winds,wind_lower_data] = wind.make_new_band(state,wind_lower_data,winds)
             
-#            elif (wind_lower_data[3] - alt) >= wind_band_width:
-#                #...Or refine the drag calculation if falling
-#                wind_lower_data = landing.refine_drag_calculation(wind_lower_data,state)
+            elif (wind_lower_data[3] - alt) >= wind_band_width:
+                #...Or refine the drag calculation if falling
+                landing.refine_drag_calculation(state)
                 
-                
+                #Start tracking descent speed
+                if falling == False:
+                    speed_state = state[:]
+                    falling = True
+                    
+            
             #If sufficient time has passed, predict the landing site using splat
             
             if (t.time() - last_prediction_time) >= prediction_gap:
@@ -92,8 +114,8 @@ while len(telemetry) < telemetry_cutoff:
                 last_prediction_time = t.time()
                 
                 #################################################
-                how_far_list.append(landing.how_far(prediction,state[0])[1])
-                times_list.append(landing.how_far(prediction,state[0])[0])
+                how_far_list.append(landing.how_far(state[0],prediction)[1])
+                times_list.append(landing.how_far(state[0],prediction)[0])
                 predictions_made += 1
                 ##################################################
         
@@ -108,35 +130,44 @@ while len(telemetry) < telemetry_cutoff:
         if calc_time < sleep_time:
         
             t.sleep(sleep_time - calc_time)
+            
+##############################################################
         
 #    except: #Failsafe. If any errors occur, the program exits
 #        break
+    
+##############################################################    
         
+##PLOT SEPARATELY
 ##############################################################
         
 with open("ackerman_pred.obj", "rb") as fp:
     ack_pred = pickle.load(fp)
     
 how_far_ack = []
+times_list_ack = []
 prediction_ack_no = 0
 
 for i in range(0,len(ack_pred),20):
     prediction  = [float(ack_pred[i][3]),float(ack_pred[i][4])]
     time = ack_pred[i][2]
-    ackerman_prediction = landing.how_far(prediction,time)
+    times_list_ack.append(time)
+    ackerman_prediction = landing.how_far(time,prediction)
     how_far_ack.append(ackerman_prediction[1])
     prediction_ack_no += 1
 
 y = np.linspace(0,130,prediction_ack_no)
 x = np.linspace(0,130,predictions_made)
+plt.figure(1)
 plt.xticks(x,times_list,rotation = 'vertical')
 plt.plot(x,how_far_list)
 plt.ylabel('Error in landing site prediction [km]')
 plt.xlabel('Time [GMT, equivalent to AEDT - 11]')
+#plt.show()
+plt.figure(2)
+plt.xticks(y,times_list_ack,rotation = 'vertical')
 plt.plot(y,how_far_ack)
+plt.ylabel('Error in landing site prediction [km]')
+plt.xlabel('Time [GMT, equivalent to AEDT - 11]')
 plt.show()
-a = sorted(calc_times,reverse = True)
-a2 = [i for i in a if i > 0]
-max_calc = a2[0]
-av_calc = sum(a2)/len(a2)
 ###############################################################

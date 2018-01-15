@@ -18,13 +18,15 @@ M_air = 0.0289644 #molar mass of air, kg/mol
 earth_radius = 6371 #km. Earth radius
 
 ##BALLOON PARAMETERS
-parachute_area =  pi * (parachute_diameter/2) ** 2  
+parachute_area = 2 * pi * (parachute_diameter/2) ** 2  
 area_burst = parachute_area + payload_area
 descent_m = pay_m + 0.05 * bal_m #Descent mass, kg
 
-#global variable to track descent velocity
+#VELOCITY-TRACKING VARIABLE
 v0_global = 0
 
+
+#DENSITY AND DRAG FUNCTIONS
     
 def density_at_alt(alt):
     """"Returns air density in kg/m^3 as a function of altitude above mean 
@@ -69,13 +71,178 @@ def density_at_alt(alt):
         
         return p_b * exp(exponent)    
 
+
 def drag_at_alt(alt,descent_rate):
     """drag_at_alt applies the drag formula: 
         F_drag = 1/2 * Coefficient_drag * density * velocity^2 * Area"""
     
     rho = density_at_alt(alt)
     
-    return 0.5 * descent_rate ** 2 * rho * (C * parachute_area) 
+    return 0.5 * C * rho * descent_rate ** 2 * parachute_area 
+
+
+def refine_drag_calculation(state):
+    """This function refines the value of the drag coefficient using the 
+    v0_global and an estimation of the current terminal velocity. 
+    refine_drag_calculation() calls find_C()."""
+    
+    global C
+    
+    #Extract the current altitude and find terminal velocity
+
+    alt = state[3]
+    v_terminal = find_terminal_velocity(alt)
+    
+    #Check if the current velocity is within a sensible range of v_terminal. 
+    #If so, C becomes the average of the two
+    
+    if abs(v0_global - v_terminal) < 10:
+        C = 1/2 * (C + find_C(v0_global,alt))
+        
+        
+def find_C(descent_rate,alt):
+    """find_C() returns a new coefficient of drag for a non-zero descent_rate,
+    assuming that the payload is falling at terminal velocity"""
+    
+    rho = density_at_alt(alt)
+    
+    if not(descent_rate == 0):
+        return (descent_m * g)/(0.5 * rho * descent_rate ** 2 * parachute_area)
+    
+    else:
+        return C
+
+
+#TEMPERATURE/PRESSURE FUNCTIONS
+    
+def temp_press_at_alt(alt):
+    """This function returns the temperature (in Kelvin) and pressure (in Pa) 
+    at any given altitude, as determined by the formula given at:
+    https://www.grc.nasa.gov/www/k-12/rocket/atmosmet.html"""
+    
+    if 0 <= alt < 11000:
+        P_b = 101325 #Pa
+        T_b = 288.15 #K
+        L_b = -0.0065
+        h_b = 0
+        
+    elif 11000 <= alt < 20000:
+        P_b = 22632.10
+        T_b = 216.65
+        L_b = 0
+        h_b = 11000
+        
+    elif 20000 <= alt < 32000:
+        P_b = 5474.89
+        T_b = 216.65
+        L_b = 0.001
+        h_b = 20000
+        
+    elif 32000 <= alt < 47000:
+        P_b = 868.02
+        T_b = 288.65
+        L_b = 0.0028
+        h_b = 32000
+        
+    #Apply the correct formula based on the lapse rate, L_b
+        
+    if L_b != 0:
+        
+        fraction = T_b / (T_b + L_b*(alt - h_b))
+        exponent = (g * M_air)/(R * L_b)
+        
+        P = P_b * (fraction) ** exponent
+        
+        return [T_b,P]
+    
+    if L_b == 0:
+        exponent = (-g * M_air * (alt - h_b))/(R * T_b)
+        
+        P = P_b * exp(exponent)
+        
+        return [T_b,P]
+
+
+def radius_at_tp(T,P):  
+    """Finds the radius of the balloon as a function of the external 
+    temperature and pressure, T and P, using the Ideal Gas Law: 
+        PV = nRT. T is expected in Kelvin and P in Pascals."""
+    
+    #from the ideal gas law ...
+    
+    return ((3 * n * R * T)/(4 * pi * P)) ** (1/3)
+
+def ac_at_tp(temp,press):
+    """ac_at_alt() finds the 'area correction' (defined as the ratio of
+    the balloon-payload system after and before bursting) as a function
+    of the external temperature and pressure. Temperature is expected 
+    in Kelvin and Pressure in Pascal."""
+    
+    balloon_radius = radius_at_tp(temp,press)
+    
+    #Find the unburst area and return the ratio
+    
+    area_unburst = payload_area + pi * (balloon_radius) ** 2
+    
+    return area_burst/area_unburst
+
+def find_gas_n(start_temp,start_pres):
+    """find_gas_n() finds the number of mols of gas in the balloon using the
+    starting temperature (K), pressure (Pa) and volume (m^3) and the Ideal
+    Gas Law."""
+    
+    global n
+    
+    n = (start_pres * balloon_volume / (R * start_temp))
+    
+    
+#SPEED FUNCTIONS
+
+def refine_speed(state,speed_state):
+    """This function refines the value of the globally-defined v0_global by
+    making a distance/time calculation using its current state and the last
+    time it checked (i.e. the speed state)"""
+    
+    global v0_global
+    
+    #find the distance and time taken between now and the last windband
+    
+    alt = state[3]
+    
+    at = datetime.strptime(state[0], FMT) - datetime.strptime(speed_state[0], FMT)
+    actual_time = at.total_seconds()
+    dist = alt - speed_state[3]
+    
+    #If time has elapsed, take v0_global as distance/time
+    
+    if not(actual_time == 0):
+        v0_global = dist/actual_time
+
+    #reset speed_state as the current state and return it
+                
+    speed_state = state[:]
+    
+    return speed_state
+
+def find_terminal_velocity(alt):
+    """This function finds the terminal velocity at a specific altitude 
+    assuming terminal velocity. alt is expected in m."""
+    
+    rho = density_at_alt(alt)
+    
+    return -1*sqrt(descent_m * g / (0.5 * C * rho * parachute_area))
+
+
+#LANDING-PREDICTION FUNCTIONS
+    
+def how_many_bands(winds,alt):
+    """Uses a loop to return the index of the first windband entirely 
+    above alt. If none exist, the last index is returned."""
+    for i in range(0,len(winds)):
+        if winds[i][1] > alt:
+            return i
+
+    return len(winds)
 
 def find_bandchange(windband,v0):
     """find_bandchange finds the change in latitude, longitude and altitude
@@ -88,7 +255,7 @@ def find_bandchange(windband,v0):
     
     bandwidth =  alt_upper - alt_lower
     
-    #split the windband into band_sections...
+    #split the windband into 1000 band_sections...
     
     band_section = -0.001 * bandwidth
     
@@ -99,9 +266,11 @@ def find_bandchange(windband,v0):
     
     for i in range (0,1000):
         
+        F_drag = drag_at_alt(alti,v0)
+        
         #Apply the kinematic equations
 
-        a = 1/descent_m * (drag_at_alt(alti,v0) - g)
+        a = 1/descent_m * (F_drag - descent_m*g)
         dt = (-v0 - sqrt(v0 ** 2 + 2 * a * band_section))/a
         
         #iterate up the time sum, altitude and velocity        
@@ -118,14 +287,6 @@ def find_bandchange(windband,v0):
     
     return [sum_t,delta_lat,delta_long,alt_lower,v0]
 
-def how_many_bands(winds,alt):
-    """Uses a loop to return the index of the first windband entirely 
-    above alt. If none exist, the last index is returned."""
-    for i in range(0,len(winds)):
-        if winds[i][1] > alt:
-            return i
-
-    return len(winds)
 
 def splat(state,winds):
     """Predicts the landing site by identifying the current altitude 
@@ -142,7 +303,7 @@ def splat(state,winds):
     #Override the speed from the Raspberri Pi with our best 
     #speed estimate from the descent data
     
-    check_speed(speed)
+    speed = v0_global
     
     #find the number of bands below the payload, at alt
     
@@ -169,13 +330,15 @@ def splat(state,winds):
     return (lat,long)
             
 
-def how_far(prediction,time,lat2 = -34.37435, long2 = 147.859):
+#DISTANCE FUNCTIONS
+
+def how_far(time,prediction,lat2 = -34.37435, long2 = 147.859):
     """how_far() returns the distance (in km) between any two points of 
     latitude and longitude using the Haversine Formula (see 
     https://www.movable-type.co.uk/scripts/latlong.html). The function
     expects prediction as a list of the form [lat,long] and time as a
     string. lat2 and long2 have default values as the actual landing
-    coordinates of the YERRALOON1."""
+    coordinates of YERRALOON1."""
     
     #Extract the latitude and longitude from prediction 
     
@@ -196,120 +359,3 @@ def how_far(prediction,time,lat2 = -34.37435, long2 = 147.859):
     dist = earth_radius*c
     
     return [time,dist] 
-
-def radius_at_tp(T,P):  
-    """Finds the radius of the balloon as a function of the external 
-    temperature and pressure, T and P using the Ideal Gas Law: 
-        PV = nRT. T is expected in Kelvin and P in Pascals."""
-    
-    #from the ideal gas law ...
-    
-    return ((3 * n * R * T)/(4 * pi * P)) ** (1/3)
-
-def ac_at_tp(temp,press):
-    """ac_at_alt() finds the 'area correction' (defined as the ratio of
-    the balloon-payload system after and before bursting) as a function
-    of the external temperature and pressure. Temperature is expected 
-    in Kelvin and Pressure in Pascal."""
-    
-    balloon_radius = radius_at_tp(temp,press)
-    
-    area_unburst = payload_area + pi * (balloon_radius) ** 2
-    
-    return area_burst/area_unburst
-
-def refine_drag_calculation(wind_lower_data,state):
-    """This function refines the value of v0_global (the global variable
-    tracking payload descent velocity) using the distance and time values
-    of the payload in the previous windband."""
-    
-    global C
-    
-    #find the distance and time taken between now and the last windband
-    
-    alt = state[3]
-    
-    at = datetime.strptime(state[0], FMT) - datetime.strptime(wind_lower_data[0], FMT)
-    actual_time = at.total_seconds()
-    dist = alt - wind_lower_data[3]
-    
-    v0_global = dist/actual_time
-    
-    rho = density_at_alt(alt)
-    
-    C = (4 * C + find_C(v0_global,rho)) / 5
-    
-    #reset wind_lower_data
-                
-    wind_lower_data = state[:]
-    
-    return wind_lower_data
-    
-def check_speed(speed):
-    """This function checks the value of speed to ensure it is consistent 
-    with the best current estimate of payload descent velocity, v0_global."""
-    
-    if v0_global > 0 and abs(speed - v0_global) > 1:
-        return v0_global
-        
-    return speed
-
-def temp_press_at_alt(alt):
-    #from https://www.grc.nasa.gov/www/k-12/rocket/atmosmet.html
-    
-    if 0 <= alt < 11000:
-        P_b = 101325 #Pa
-        T_b = 288.15 #K
-        L_b = -0.0065
-        h_b = 0
-        
-    elif 11000 <= alt < 20000:
-        P_b = 22632.10
-        T_b = 216.65
-        L_b = 0
-        h_b = 11000
-        
-    elif 20000 <= alt < 32000:
-        P_b = 5474.89
-        T_b = 216.65
-        L_b = 0.001
-        h_b = 20000
-        
-    elif 32000 <= alt < 47000:
-        P_b = 868.02
-        T_b = 288.65
-        L_b = 0.0028
-        h_b = 32000
-        
-    if L_b != 0:
-        
-        fraction = T_b / (T_b + L_b*(alt - h_b))
-        exponent = (g * M_air)/(R * L_b)
-        
-        P = P_b * (fraction) ** exponent
-        
-        return [T_b,P]
-    
-    if L_b == 0:
-        exponent = (-g * M_air * (alt - h_b))/(R * T_b)
-        
-        P = P_b * exp(exponent)
-        
-        return [T_b,P]
-    
-def find_gas_n(start_temp,start_pres):
-    global n
-    
-    n = (start_pres * balloon_volume / (R * start_temp))
-    
-
-def find_terminal_velocity(alt):
-    
-    rho = density_at_alt(alt)
-    
-    return sqrt(descent_m * g / (0.5 * C * rho * parachute_area))
-    
-
-def find_C(descent_rate,rho):
-    
-    return (descent_m * g)/(0.5 * rho * descent_rate * descent_rate);

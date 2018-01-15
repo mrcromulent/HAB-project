@@ -11,25 +11,29 @@ Created on Fri Jan  5 12:40:18 2018
 fp = 'YERRALOON1_DATA//telemetry.txt'
 output_filepath = 'prediction.txt'
 callsign = '$$YERRA' 
-wind_band_width = 100
-sleep_time = 0.001
-prediction_gap = 0.05
+wind_band_width = 100 #m
+sleep_time = 0.001 #s (usually 1)
+prediction_gap = 0.02 #s (usually 90)
+
 
 #Launch parameters
 pay_m = 1.8 #kg
-#pay_m = 1
 bal_m = 1.2 #kg
-balloon_volume = 4 # calculated using V = 4/3 * pi * (1.5/2)^2, for a measurediameter of 1.5 m
+balloon_volume = 4 #m^3
 M_gas = 0.004 #molar mass of helium, kg/mol
-parachute_diameter = 1.2192 #m
-payload_area = 0.3 * 0.3
-##DRAG COEFFICIENTS
-C = 0.44 
-#C = 2
+parachute_diameter = 1.2192 #4 ft in m
+payload_area = 0.3 * 0.3 #m^2
+
+
+#Parachute Drag Coefficient
+C = 0.5
+
 
 ##TELEMETRY FORMAT
 #Expected telemetry format is CALLSIGN,PACKET_NO,TIME,LAT,LONG,ALT,SPEED,HEADING,NO_SATELLITES,
 #INTERNAL_TEMP,EXTERNAL_TEMP,PRESSURE,HUMIDITY*CHECKSUM
+
+#Data not included should be saved as the string 'NI' (THIS FUNCTIONALITY IS NOT YET IMPLEMENTED)
 
 callsign_index = 0
 packet_index = 1

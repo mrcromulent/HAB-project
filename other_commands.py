@@ -4,14 +4,14 @@ Created on Tue Dec  5 09:09:55 2017
 
 @author: Pierre
 """
-
-import os
+from os import stat
 from math import nan
 from config import callsign_index,packet_index,time_index,lat_index,long_index,alt_index,speed_index,\
 heading_index,satellites_index,internal_index,external_index,pressure_index,hum_check_index,callsign
 
 read_pos = 0
 safe_line = [nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan]
+optional_dict = {}
 
 def file_empty(filepath):
     """file_empty checks the status of the file at filepath. If it's empty 
@@ -20,7 +20,7 @@ def file_empty(filepath):
     
     try:
         #120 is approximately the length of one $$YERRA line
-        return (os.stat(filepath).st_size < 120)
+        return (stat(filepath).st_size < 120)
     
     except FileNotFoundError:
         return True
@@ -161,3 +161,53 @@ def update_read_position(new_read_pos):
     
     read_pos = new_read_pos
     
+def skip_telemetry(filepath):
+    """skip_telemetry() skips to the end of the user-specified telemetry file
+    to ignore any telemetry from previous flights"""
+    
+    with open(filepath) as f:
+        
+            #skip to the end, update read position
+            f.seek(2)
+            update_read_position(f.tell())
+            
+def identify_provided_data(indices):
+    
+    global optional_dict
+    
+    [callsign_index,packet_index,time_index,lat_index,long_index,alt_index,speed_index,\
+     heading_index,satellites_index,internal_index,external_index,pressure_index,hum_check_index] = indices[:]
+    
+    #Identify if any vital components are missing
+    
+    if (callsign_index == 'NI' or time_index == 'NI' or lat_index == 'NI' or long_index == 'NI'\
+        or alt_index == 'NI'):
+        
+        raise Exception('Callsign, time, latitude, longitude and altitude data MUST be provided. \
+                        At least one has been marked as NI (not included)')
+    
+    #identify if any optional components are missing and add them to the dictionary if included
+    
+    if not(packet_index == 'NI'):
+        optional_dict['Packets'] = packet_index
+        
+    if not(speed_index == 'NI'):
+        optional_dict['Speed'] = speed_index
+        
+    if not(heading_index == 'NI'):
+        optional_dict['Heading'] = heading_index
+        
+    if not(satellites_index == 'NI'):
+        optional_dict['Satellites'] = satellites_index
+        
+    if not(internal_index == 'NI'):
+        optional_dict['Internal'] = internal_index
+        
+    if not(external_index == 'NI'):
+        optional_dict['External'] = external_index
+        
+    if not(pressure_index == 'NI'):
+        optional_dict['Pressure'] = pressure_index
+        
+    if not(hum_check_index == 'NI'):
+        optional_dict['Hum_Check'] = hum_check_index
