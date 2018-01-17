@@ -8,12 +8,12 @@ Created on Fri Jan  5 12:40:18 2018
 ##HAB-LPR Configuration file
 
 #Algorithm parameters
-fp = 'YERRALOON1_DATA//telemetry.txt'
-output_filepath = 'prediction.txt'
+fp = '/home/pi/pits/tracker/telemetry.txt'
+output_filepath = '/home/pi/pierre/Flight/pierre_prediction.csv'
 callsign = '$$YERRA' 
 wind_band_width = 100 #m
-sleep_time = 0.001 #s (usually 1)
-prediction_gap = 0.06 #s (usually 90)
+sleep_time = 1 #s (usually 1)
+prediction_gap = 90 #s (usually 90)
 
 
 #Launch parameters

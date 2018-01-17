@@ -96,7 +96,7 @@ def refine_drag_calculation(state):
     #Check if the current velocity is within a sensible range of v_terminal. 
     #If so, C becomes the average of the two
     
-    if abs(v0_global - v_terminal) < 1:
+    if abs(v0_global - v_terminal) < 10:
         C = 1/2 * (C + find_C(v0_global,alt))
         
         
@@ -325,7 +325,7 @@ def splat(state,winds):
     #write the results to the prediction file and return the current precition
         
     with open(output_filepath,'a') as h:
-        h.write(time + ',' + str(round(lat,6)) + ',' + str(round(long,6)) + '\n')
+        h.write(str(round(lat,6)) + ',' + str(round(long,6)) + '\n')
     
     return (lat,long)
             

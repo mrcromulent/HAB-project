@@ -41,7 +41,7 @@ try:
         t.sleep(sleep_time)
     
     #Skip any existing telemetry (e.g. from previous flights)
-    oc.skip_telemetry(fp)
+#    oc.skip_telemetry(fp)
     
     #WAIT UNTIL NEW TELEMETRY IS ADDED? call to read_properly?
     
@@ -138,36 +138,65 @@ while len(telemetry) < telemetry_cutoff: #while True:
     
 ##############################################################    
         
-##PLOT SEPARATELY
+###PLOT SEPARATELY
+###############################################################
+#        
+#with open("YERRALOON1_DATA//ackerman_pred.obj", "rb") as fp:
+#    ack_pred = pickle.load(fp)
+#    
+#how_far_ack = []
+#times_list_ack = []
+#prediction_ack_no = 0
+#
+#for i in range(0,len(ack_pred),20):
+#    prediction  = [float(ack_pred[i][3]),float(ack_pred[i][4])]
+#    time = ack_pred[i][2]
+#    times_list_ack.append(time)
+#    ackerman_prediction = landing.how_far(time,prediction)
+#    how_far_ack.append(ackerman_prediction[1])
+#    prediction_ack_no += 1
+#
+#y = np.linspace(0,130,prediction_ack_no)
+#x = np.linspace(0,130,predictions_made)
+#plt.figure(1)
+#plt.xticks(x,times_list,rotation = 'vertical')
+#plt.plot(x,how_far_list)
+#plt.ylabel('Error in landing site prediction [km]')
+#plt.xlabel('Time [GMT, equivalent to AEDT - 11]')
+##plt.show()
+#plt.figure(2)
+#plt.xticks(y,times_list_ack,rotation = 'vertical')
+#plt.plot(y,how_far_ack)
+#plt.ylabel('Error in landing site prediction [km]')
+#plt.xlabel('Time [GMT, equivalent to AEDT - 11]')
+#plt.show()
+################################################################
+
 ##############################################################
         
-with open("ackerman_pred.obj", "rb") as fp:
+with open("YERRALOON1_DATA//ackerman_pred.obj", "rb") as fp:
     ack_pred = pickle.load(fp)
     
 how_far_ack = []
-times_list_ack = []
 prediction_ack_no = 0
 
 for i in range(0,len(ack_pred),20):
     prediction  = [float(ack_pred[i][3]),float(ack_pred[i][4])]
     time = ack_pred[i][2]
-    times_list_ack.append(time)
     ackerman_prediction = landing.how_far(time,prediction)
     how_far_ack.append(ackerman_prediction[1])
     prediction_ack_no += 1
 
 y = np.linspace(0,130,prediction_ack_no)
 x = np.linspace(0,130,predictions_made)
-plt.figure(1)
 plt.xticks(x,times_list,rotation = 'vertical')
 plt.plot(x,how_far_list)
 plt.ylabel('Error in landing site prediction [km]')
 plt.xlabel('Time [GMT, equivalent to AEDT - 11]')
-#plt.show()
-plt.figure(2)
-plt.xticks(y,times_list_ack,rotation = 'vertical')
 plt.plot(y,how_far_ack)
-plt.ylabel('Error in landing site prediction [km]')
-plt.xlabel('Time [GMT, equivalent to AEDT - 11]')
 plt.show()
+a = sorted(calc_times,reverse = True)
+a2 = [i for i in a if i > 0]
+max_calc = a2[0]
+av_calc = sum(a2)/len(a2)
 ###############################################################
