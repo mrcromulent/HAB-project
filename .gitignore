@@ -9,3 +9,6 @@ Logistics
 Extra_Scripts
 HAB_project_notes.docx
 AITC_documents
+/.idea/
+/venv/
+Thubs.db
