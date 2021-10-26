@@ -1,4 +1,0 @@
-pay_m = 1.8 #kg
-balloon_volume = 4 #m^3
-parachute_diameter = 1.2192 #m
-C = 0.5

@@ -1,0 +1,6 @@
+payload_mass: 1.8
+balloon_mass: 1.2
+parachute_diameter: 1.2192
+drag_coefficient: 0.5
+payload_area: 0.09
+balloon_volume: 4.0

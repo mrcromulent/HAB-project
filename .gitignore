@@ -11,4 +11,7 @@ HAB_project_notes.docx
 AITC_documents
 /.idea/
 /venv/
+/.tox/
 Thubs.db
+/hab_project.egg-info/
+.coverage
