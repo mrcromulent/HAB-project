@@ -1,5 +1,28 @@
-from .const import g, R, M_air
-from math import exp, pi, sqrt
+from math import exp, radians, sin, cos, asin, sqrt
+from .const import g, R, M_air, earth_radius
+
+
+def haversine_distance(latlon1, latlon2):
+    """
+
+    :param latlon1:
+    :param latlon2:
+    :return:
+    """
+    lat1, lon1 = latlon1
+    lat2, lon2 = latlon2
+
+    del_lat = radians(lat1 - lat2)
+    del_long = radians(lon1 - lon2)
+
+    lat1_rad = radians(lat1)
+    lat2_rad = radians(lat2)
+
+    a = sin(del_lat / 2) ** 2 + cos(lat1_rad) * cos(lat2_rad) * sin(del_long / 2) ** 2
+    c = 2 * asin(sqrt(a))
+    dist = earth_radius * c
+
+    return dist
 
 
 def get_reference_rates(altitude):
@@ -42,28 +65,3 @@ def primitive_vars_at_altitude(altitude):
         t   = t_b
 
     return p, rho, t
-
-
-def radius_at_tp(t, p, n):
-    """Finds the radius of the balloon as a function of the external
-    temperature and pressure, T and P, using the Ideal Gas Law:
-        PV = nRT. T is expected in Kelvin and P in Pascals."""
-
-    # from the ideal gas law ...
-    return ((3 * n * R * t) / (4 * pi * p)) ** (1 / 3)
-
-
-def find_terminal_velocity(m, c, area, alt):
-
-    _, rho, _ = primitive_vars_at_altitude(alt)
-    return -1.0 * sqrt(m * g / (0.5 * c * rho * area))
-
-
-def find_drag_coefficient(m, v, area, alt):
-    return 1.75
-
-
-def drag_at_alt(v, c, area, alt):
-
-    _, rho, _ = primitive_vars_at_altitude(alt)
-    return 0.5 * c * rho * v ** 2 * area
