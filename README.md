@@ -5,8 +5,8 @@ High-altitude Balloon (HAB) payload landing site predictor.
 
 ![](figs/still1.jpg)
 
-![Peak altitude](still7.jpg)
+![Peak altitude](figs/still7.jpg)
 
-![Burst!](still9.jpg)
+![Burst!](figs/still9.jpg)
 
-![Corrected for actual curve](still11_realcurve.jpg)
+![Corrected for actual curve](figs/still11_realcurve.jpg)
